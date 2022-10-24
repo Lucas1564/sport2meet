@@ -1,6 +1,7 @@
 //create schema
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
+
 //Define a schema for activity
 const activitySchema = new Schema({
 	description: {

@@ -4,6 +4,7 @@ import logger from "morgan";
 import indexRouter from "./routes/index.js";
 import usersRouter from "./routes/users.js";
 import activitiesRouter from "./routes/activities.js";
+import commentsRouter from "./routes/comments.js";
 import authRouter from "./routes/auth.js";
 import mongoose from 'mongoose';
 import * as config from "./config.js";
@@ -23,6 +24,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
 app.use("/activities", activitiesRouter);
+app.use("/comments", commentsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
