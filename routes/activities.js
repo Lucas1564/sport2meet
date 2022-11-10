@@ -20,6 +20,16 @@ router.get('/', function (req, res, next) {
     });
 });
 
+/* GET activity by id. */
+router.get('/:id', function (req, res, next) {
+    Activity.findById(req.params.id).exec(function (err, activityById) {
+        if (err) {
+            return next(err);
+        }
+        res.send(activityById);
+    });
+});
+
 
 /* POST new activity */
 router.post('/', function (req, res, next) {
