@@ -6,6 +6,7 @@ import usersRouter from "./routes/users.js";
 import activitiesRouter from "./routes/activities.js";
 import commentsRouter from "./routes/comments.js";
 import authRouter from "./routes/auth.js";
+import userActivityRouter from "./routes/userActivity.js";
 import mongoose from 'mongoose';
 import * as config from "./config.js";
 
@@ -25,6 +26,7 @@ app.use("/users", usersRouter);
 app.use("/auth", authRouter);
 app.use("/activities", activitiesRouter);
 app.use("/comments", commentsRouter);
+app.use("/userActivity", userActivityRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

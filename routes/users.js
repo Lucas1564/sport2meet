@@ -37,6 +37,24 @@ router.delete('/:id', function(req, res, next) {
   });
 });*/
 
+/* PATCH user */
+router.patch('/id/:id', authenticate, function (req, res, next) {
+  // patch only if req.user._id == req.params.id
+  if (req.user._id == req.params.id || req.user.role == "admin") {
+    // patch by req.params.body
+    var userModif = req.body;
+    User.findByIdAndUpdate(req.params.id, userModif, function (err, userById) {
+      if (err) {
+        return next(err);
+      }
+      res.send("User modifié avec succès \n" + userById);
+    });
+  } else {
+    res.send("Vous n'avez pas les droits pour modifier cet utilisateur");
+  }
+});
+
+
 
 /* POST new user */
 router.post('/', function (req, res, next) {
