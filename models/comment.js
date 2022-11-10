@@ -10,11 +10,11 @@ const commentSchema = new Schema({
 		minlenght : [2, "Content is too short"],
 		maxlenght : 100
 	},
-	// creator: {
-	// 	type: Schema.Types.ObjectId,
-	// 	ref: 'User',
-	// 	required: true,
-	// },
+	creator: {
+		type: Schema.Types.ObjectId,
+		ref: 'User',
+		required: true,
+	},
 	// activity : {
 	// 	type : Schema.Type.ObjectId(),
 	// 	ref : 'Activity'
