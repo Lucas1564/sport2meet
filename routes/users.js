@@ -55,7 +55,6 @@ router.post('/', function (req, res, next) {
       res.send("User supprimé")
       res.status(200).send();
     });
-
 });
 
 
@@ -69,7 +68,7 @@ router.patch('/id/:id', authenticate, function (req, res, next) {
       if (err) {
         return next(err);
       }
-      res.send("User modifié avec succès \n" + userById);
+      res.send("User modifié avec succès");
     });
   } else {
     res.send("Vous n'avez pas les droits pour modifier cet utilisateur");
