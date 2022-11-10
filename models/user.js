@@ -38,9 +38,11 @@ const userSchema = new Schema({
 userSchema.virtual('password');
 
 userSchema.pre('save', async function () {
-	if (this.password) {
+	if (this.password && this.password.length >= 8) {
 		const passwordHash = await bcrypt.hash(this.password, config.bcryptCostFactor);
 		this.passwordHash = passwordHash;
+	} else {
+		throw new Error("Password is too short (8 characters minimum)");
 	}
 });
 
