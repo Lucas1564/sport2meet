@@ -7,18 +7,67 @@ import {
 } from "./auth.js";
 import geocoder from "node-geocoder";
 import axios from "axios";
+import formatLinkHeader from 'format-link-header';
+import url from '../config.js'
 
 const router = express.Router();
 
-/* GET activities listing. */
-router.get('/', function (req, res, next) {
-    Activity.find().sort('sport').exec(function (err, activities) {
+// /* GET activities listing. */
+router.get('/', function(req, res, next) {
+    Activity.find().count(function(err, total) {
+        if (err) {
+            return next(err);
+        }
+
+        let query = Activity.find();
+        // Parse the "page" param (default to 1 if invalid)
+        let page = parseInt(req.query.page, 10);
+        if (isNaN(page) || page < 1) {
+          page = 1;
+        }
+        // Parse the "pageSize" param (default to 100 if invalid)
+        let pageSize = parseInt(req.query.pageSize, 10);
+        if (isNaN(pageSize) || pageSize < 0 || pageSize > 100) {
+          pageSize = 100;
+        }
+        // Apply skip and limit to select the correct page of elements
+        query = query.skip((page - 1) * pageSize).limit(pageSize);
+
+        //Ceil for the last page
+        let maxPage = Math.ceil(total / pageSize);
+
+        //Paginated activities
+        const links = {};
+        function buildLinkUrl(url, page, pageSize) {
+        return url + '?page=' + page + '&pageSize=' + pageSize;
+        }
+        // Add "first" and "prev" links unless it's the first page
+        if (page > 1) {
+        links.first = { rel: 'first', url: buildLinkUrl(url, 1, pageSize) };
+        links.prev = { rel: 'prev', url: buildLinkUrl(url, page - 1, pageSize) };
+        }
+        // Add "next" and "last" links unless it's the last page
+        if (page < maxPage) {
+        links.next = { rel: 'next', url: buildLinkUrl(url, page + 1, pageSize) };
+        links.last = { rel: 'last', url: buildLinkUrl(url, maxPage, pageSize) };
+        }
+        if (Object.keys(links).length >= 1) {
+        res.set('Link', formatLinkHeader(links));
+        }  
+
+        //Display the activities
+        query.sort('sport').exec(function (err, activities) {
         if (err) {
             return next(err);
         }
         res.send(activities);
+        });
+
     });
 });
+  
+
+
 
 /* GET activity by id. */
 router.get('/id/:id', function (req, res, next) {

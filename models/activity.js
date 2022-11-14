@@ -36,7 +36,7 @@ const activitySchema = new Schema({
 	type: {
 		type: String,
 		required: true,
-		enum: ['Evénement', 'Tournoi', 'Entraînement', 'Autre'],
+		enum: ['Événement', 'Tournoi', 'Entraînement', 'Autre'],
 	},
 	pictures: {
 		type: String,

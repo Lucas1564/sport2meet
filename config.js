@@ -23,3 +23,6 @@ if (process.env.PORT) {
     throw new Error('Environment variable $PORT must be a valid port number (1-65535)');
   }
 }
+
+const urlPaginatedActivities = "http://localhost:3000/activities";
+export default urlPaginatedActivities;
