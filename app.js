@@ -16,7 +16,10 @@ mongoose.connect(config.databaseUrl);
 
 const app = express();
 
-app.use(logger("dev"));
+// Log requests (except in test mode).
+if (process.env.NODE_ENV !== 'test') {
+  app.use(logger('dev'));
+}
 app.use(express.json());
 app.use(express.urlencoded({
   extended: false
