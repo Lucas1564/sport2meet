@@ -18,8 +18,8 @@ const __dirname = fs.realpathSync('.');
 router.post('/activity/:id', authenticate, fileUpload({
     limits: {
         fileSize: 50 * 1024 * 1024,
-        createParentPath: true,
     },
+    createParentPath: true,
 }), function (req, res, next) {
     activity_user.findOne({
         activity: req.params.id,
