@@ -23,6 +23,7 @@ app.use(express.urlencoded({
 }));
 
 app.use("/", indexRouter);
+app.use("/docs", express.static("docs"));
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
 app.use("/activities", activitiesRouter);
