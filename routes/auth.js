@@ -6,6 +6,28 @@ import * as config from "../config.js";
 
 const router = express.Router();
 
+/**
+* @api {post} /login Login
+* @apiGroup login
+* @apiName UserLogin
+* @apiExample Login :
+* POST 127.0.0.1:3000/auth/login
+*{
+* "email" : "alexia.leger@heig-vd.ch",
+* "password" : "alexialeger"
+*}
+* @apiSuccessExample {json} Login success :
+* Status : 200 OK
+*{
+*    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzcxZjFmNjNlM2I1ZDBhNjMxYjQwODAiLCJpYXQiOjE2Njg0MTIyMTQsImV4cCI6MTY2OTAxNzAxNH0.c2_hZ5heHFs1TvD1dgYQcaCN-mxRoWo48R9_kyskQhM"
+*}
+* @apiErrorExample {html} False password :
+* Status : 401 Unauthorized
+* Bad login
+* @apiErrorExample {html} False email :
+* Status : 401 Unauthorized
+* Bad login
+*/
 router.post('/login', async (req, res, next) => {
     try {
         const user = await User.findOne({
