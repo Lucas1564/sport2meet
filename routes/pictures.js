@@ -14,6 +14,22 @@ import fs from "fs";
 const router = express.Router();
 const __dirname = fs.realpathSync('.');
 
+/**
+* @api {post} /pictures/activity/:id Create a picture
+* @apiGroup picture
+* @apiName CreatePicture
+* @apiBody {String} name
+* @apiParam (picture) id Id of activity
+* @apiExample Create a picture
+* Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+* POST 127.0.0.1:3000/pictures/activity/6371f92c3e3b5d0a631b4097
+* form-data :
+* Key : pictures (files)
+* Value : Capture d'écran_20221111_085342.png
+* @apiSuccessExample {html} Create a user :
+* Status : 200 OK
+* 1 picture uploaded !
+*/
 /* POST picture for activity */
 router.post('/activity/:id', authenticate, fileUpload({
     limits: {
@@ -91,6 +107,57 @@ router.post('/activity/:id', authenticate, fileUpload({
     });
 });
 
+
+/**
+* @api {get} /pictures/activity/:id Get picture by activity
+* @apiGroup picture
+* @apiName GetPictureByActivity
+* @apiParam (picture) id Id of activity
+* @apiExample Get picture for activity 6371f92c3e3b5d0a631b4097
+* Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+* GET 127.0.0.1:3000/pictures/activity/6371f92c3e3b5d0a631b4097
+* @apiSuccessExample {html} Create a user :
+* Status : 200 OK
+* [
+    {
+        "_id": "637249c66c88bee7a99edb9a",
+        "name": "1668434374419_013_10.JPG",
+        "creator": {
+            "email": "alexia.leger@heig-vd.ch",
+            "firstname": "Alexia",
+            "lastname": "Leger",
+            "role": "user",
+            "registrationDate": "2022-11-14T07:44:54.998Z",
+            "id": "6371f1f63e3b5d0a631b4080"
+        },
+        "path": "C:\\Users\\Maintenant Pret\\Documents\\ArchiOWeb\\projet\\sport2meet/public/upload/1668434374419_013_10.JPG",
+        "activity": "6371f92c3e3b5d0a631b4097",
+        "mimetype": "image/jpeg",
+        "size": 375154,
+        "createAt": "2022-11-14T13:59:34.419Z",
+        "__v": 0
+    },
+    {
+        "_id": "63724b1e1f1738af5b28fb55",
+        "name": "1668434718354_013_10.JPG",
+        "creator": {
+            "email": "alexia.leger@heig-vd.ch",
+            "firstname": "Alexia",
+            "lastname": "Leger",
+            "role": "user",
+            "registrationDate": "2022-11-14T07:44:54.998Z",
+            "id": "6371f1f63e3b5d0a631b4080"
+        },
+        "path": "C:\\Users\\Maintenant Pret\\Documents\\ArchiOWeb\\projet\\sport2meet/public/upload/1668434718353_013_10.JPG",
+        "activity": "6371f92c3e3b5d0a631b4097",
+        "mimetype": "image/jpeg",
+        "size": 375154,
+        "createAt": "2022-11-14T14:05:18.354Z",
+        "__v": 0
+    },
+]
+* @apiErrorExample {html} False id of activity :
+*/
 /* GET picture by activity. */
 router.get('/activity/:id', function (req, res, next) {
     Picture.find({
@@ -107,6 +174,80 @@ router.get('/activity/:id', function (req, res, next) {
     });
 });
 
+/**
+* @api {get} /pictures/user/:id Get picture by user
+* @apiGroup picture
+* @apiName GetPictureByUser
+* @apiParam (picture) id Id of user
+* @apiExample Get picture for user 6371f1f63e3b5d0a631b4080
+* Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+* GET 127.0.0.1:3000/pictures/user/6371f1f63e3b5d0a631b4080
+* @apiSuccessExample {html} Get picture for user 6371f1f63e3b5d0a631b4080:
+*Status : 200 OK
+*[
+*    {
+*        "_id": "63724a26b05e21878f3aabab",
+*        "name": "1668434470330_013_10.JPG",
+*        "creator": "6371f1f63e3b5d0a631b4080",
+*        "path": "C:\\Users\\Maintenant Pret\\Documents\\ArchiOWeb\\projet\\sport2meet/public/upload/1668434470329_013_10.JPG",
+*        "activity": {
+*            "location": {
+*                "type": "Point",
+*                "coordinates": [
+*                    46.779117,
+*                    6.64187
+*                ]
+*            },
+*            "_id": "6371f92c3e3b5d0a631b4097",
+*            "description": "test activité",
+*            "sport": "Course",
+*            "address": "Avenue des sports 4",
+*            "npa": 1400,
+*            "locality": "Yverdon",
+*            "players": 5,
+*           "datetime": "2022-04-23T18:25:43.511Z",
+*            "type": "Evénement",
+*            "creator": "6371f1f63e3b5d0a631b4080",
+*            "__v": 0
+*        },
+*        "mimetype": "image/jpeg",
+*        "size": 375154,
+*        "createAt": "2022-11-14T14:01:10.330Z",
+*        "__v": 0
+*   },
+*    {
+*        "_id": "63724ad089244a774a587221",
+*        "name": "1668434640346_013_10.JPG",
+*        "creator": "6371f1f63e3b5d0a631b4080",
+*        "path": "C:\\Users\\Maintenant Pret\\Documents\\ArchiOWeb\\projet\\sport2meet/public/upload/1668434640345_013_10.JPG",
+*        "activity": {
+*            "location": {
+*                "type": "Point",
+*                "coordinates": [
+*                    46.779117,
+*                    6.64187
+*                ]
+*            },
+*            "_id": "6371f92c3e3b5d0a631b4097",
+*            "description": "test activité",
+*            "sport": "Course",
+*            "address": "Avenue des sports 4",
+*            "npa": 1400,
+*            "locality": "Yverdon",
+*            "players": 5,
+*            "datetime": "2022-04-23T18:25:43.511Z",
+*            "type": "Evénement",
+*            "creator": "6371f1f63e3b5d0a631b4080",
+*            "__v": 0
+*        },
+*        "mimetype": "image/jpeg",
+*        "size": 375154,
+*        "createAt": "2022-11-14T14:04:00.346Z",
+*        "__v": 0
+*    },
+*]
+* @apiErrorExample {html} False user's id :
+*/
 /* GET picture by user. */
 router.get('/user/:id', function (req, res, next) {
     Picture.find({
@@ -123,6 +264,22 @@ router.get('/user/:id', function (req, res, next) {
     });
 });
 
+/**
+* @api {patch} /pictures/:id Modify picture by id
+* @apiGroup picture
+* @apiName ModifyPictureBy)Id
+* @apiParam (picture) id Id of picture
+* @apiExample Get picture 
+* Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+* PATCH 127.0.0.1:3000/pictures/63724939654d44c5b82c1d17
+* @apiSuccessExample {html} Get picture 63724939654d44c5b82c1d17:
+*
+* @apiErrorExample {html} False id of picture :
+*
+* @apiErrorExample {html} User is not the creator of the picture :
+* Status : 403 Forbidden
+* Vous n'avez pas les droits pour modifier cette photo
+*/
 /* PATCH picture by id. */
 router.patch('/:id', authenticate, fileUpload({
     limits: {
@@ -172,7 +329,19 @@ router.patch('/:id', authenticate, fileUpload({
         }
     });
 });
-
+/**
+* @api {delete} /pictures/:id Delete picture by id
+* @apiGroup picture
+* @apiName DeletePictureBy)Id
+* @apiParam (picture) id Id of picture
+* @apiExample Get picture 
+* Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+* DELETE 127.0.0.1:3000/pictures/63724939654d44c5b82c1d17
+* @apiSuccessExample {html} Delete picture 63724939654d44c5b82c1d17:
+*
+* @apiErrorExample {html} False id of picture :
+*
+*/
 /* DELETE picture by id. */
 router.delete('/:id', authenticate, function (req, res, next) {
     Picture.findById(req.params.id).exec(function (err, picture) {
@@ -201,6 +370,4 @@ router.delete('/:id', authenticate, function (req, res, next) {
         }
     });
 });
-
-
 export default router;
