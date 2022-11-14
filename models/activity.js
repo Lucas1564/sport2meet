@@ -38,9 +38,6 @@ const activitySchema = new Schema({
 		required: true,
 		enum: ['Événement', 'Tournoi', 'Entraînement', 'Autre'],
 	},
-	pictures: {
-		type: String,
-	},
 	creator: {
 		type: Schema.Types.ObjectId,
 		ref: 'User',

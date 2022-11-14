@@ -7,7 +7,7 @@ import {
 const router = express.Router();
 
 /* GET users listing. */
-router.get('/', authenticate, function (req, res, next) {
+router.get('/', function (req, res, next) {
   User.find().sort('name').exec(function (err, users) {
     if (err) {
       return next(err);
@@ -23,7 +23,11 @@ router.get('/id/:id', function (req, res, next) {
     if (err) {
       return next(err);
     }
-    res.send(userById);
+    if (userById) {
+      res.send(userById);
+    } else {
+      res.status(404).send("User not found");
+    }
   });
 });
 
@@ -44,17 +48,24 @@ router.post('/', function (req, res, next) {
 
 
 /* DELETE user by id */
-router.delete('/id/:id', function (req, res) {
-  User.deleteOne({
-    _id: req.params.id,
-  }, function (err, user) {
-    if (err)
-      return console.error(err);
-
-    console.log('User successfully removed !');
-    res.send("User supprimé")
-    res.status(200).send();
-  });
+router.delete('/id/:id', authenticate, function (req, res) {
+  //if param id = req.id or role = admin, delete user by id and all the links with activities and comments
+  if (req.user._id == req.params.id || req.user.role == "admin") {
+    User.findByIdAndDelete(req.params.id, function (err, userById) {
+      if (err) {
+        return next(err);
+      }
+      if (userById) {
+        // Supprimer avec succès
+        res.send("User supprimé");
+      } else {
+        res.status(404).send("User not found");
+      }
+    });
+  } else {
+    //send unauthorized
+    res.status(401).send("Vous n'avez pas les droits pour modifier cet utilisateur");
+  }
 });
 
 
@@ -68,10 +79,15 @@ router.patch('/id/:id', authenticate, function (req, res, next) {
       if (err) {
         return next(err);
       }
-      res.send("User modifié avec succès");
+      if (userById) {
+        // Supprimer avec succès
+        res.send("User modifié");
+      } else {
+        res.status(404).send("User not found");
+      }
     });
   } else {
-    res.send("Vous n'avez pas les droits pour modifier cet utilisateur");
+    res.status(401).send("Vous n'avez pas les droits pour modifier cet utilisateur");
   }
 });
 

@@ -9,12 +9,15 @@ import geocoder from "node-geocoder";
 import axios from "axios";
 import formatLinkHeader from 'format-link-header';
 import url from '../config.js'
+import fileUpload from "express-fileupload";
+import fs from "fs";
 
 const router = express.Router();
+const __dirname = fs.realpathSync('.');
 
 // /* GET activities listing. */
-router.get('/', function(req, res, next) {
-    Activity.find().count(function(err, total) {
+router.get('/', function (req, res, next) {
+    Activity.find().count(function (err, total) {
         if (err) {
             return next(err);
         }
@@ -23,12 +26,12 @@ router.get('/', function(req, res, next) {
         // Parse the "page" param (default to 1 if invalid)
         let page = parseInt(req.query.page, 10);
         if (isNaN(page) || page < 1) {
-          page = 1;
+            page = 1;
         }
         // Parse the "pageSize" param (default to 100 if invalid)
         let pageSize = parseInt(req.query.pageSize, 10);
         if (isNaN(pageSize) || pageSize < 0 || pageSize > 100) {
-          pageSize = 100;
+            pageSize = 100;
         }
         // Apply skip and limit to select the correct page of elements
         query = query.skip((page - 1) * pageSize).limit(pageSize);
@@ -38,34 +41,47 @@ router.get('/', function(req, res, next) {
 
         //Paginated activities
         const links = {};
+
         function buildLinkUrl(url, page, pageSize) {
-        return url + '?page=' + page + '&pageSize=' + pageSize;
+            return url + '?page=' + page + '&pageSize=' + pageSize;
         }
         // Add "first" and "prev" links unless it's the first page
         if (page > 1) {
-        links.first = { rel: 'first', url: buildLinkUrl(url, 1, pageSize) };
-        links.prev = { rel: 'prev', url: buildLinkUrl(url, page - 1, pageSize) };
+            links.first = {
+                rel: 'first',
+                url: buildLinkUrl(url, 1, pageSize)
+            };
+            links.prev = {
+                rel: 'prev',
+                url: buildLinkUrl(url, page - 1, pageSize)
+            };
         }
         // Add "next" and "last" links unless it's the last page
         if (page < maxPage) {
-        links.next = { rel: 'next', url: buildLinkUrl(url, page + 1, pageSize) };
-        links.last = { rel: 'last', url: buildLinkUrl(url, maxPage, pageSize) };
+            links.next = {
+                rel: 'next',
+                url: buildLinkUrl(url, page + 1, pageSize)
+            };
+            links.last = {
+                rel: 'last',
+                url: buildLinkUrl(url, maxPage, pageSize)
+            };
         }
         if (Object.keys(links).length >= 1) {
-        res.set('Link', formatLinkHeader(links));
-        }  
+            res.set('Link', formatLinkHeader(links));
+        }
 
         //Display the activities
         query.sort('sport').exec(function (err, activities) {
-        if (err) {
-            return next(err);
-        }
-        res.send(activities);
+            if (err) {
+                return next(err);
+            }
+            res.send(activities);
         });
 
     });
 });
-  
+
 
 
 
@@ -79,17 +95,14 @@ router.get('/id/:id', function (req, res, next) {
     });
 });
 
-/* GET avtivity by user. */
-router.get('/user', authenticate, function (req, res, next) {
-    activity_user.find({
-        user: req.user._id
-    }).populate('activity').exec(function (err, activityByUser) {
+/* GET Sport */
+router.get('/sports', function (req, res, next) {
+    Activity.find().distinct('sport').exec(function (err, sport) {
         if (err) {
             return next(err);
         }
-        res.send(activityByUser);
+        res.send(sport);
     });
-
 });
 
 /* PATCH activity by id. */
@@ -100,17 +113,17 @@ router.patch('/id/:id', authenticate, function (req, res, next) {
             return next(err);
         }
         // patch only if req.user._id == activityById.creator
-        if (req.user._id == activityById.creator || req.user.role == "admin") {
+        if (req.user._id.toString() === activityById.creator.toString() || req.user.role == "admin") {
             // patch by req.params.body
             var activityModif = req.body;
-            Activity.findByIdAndUpdate(req.params.id, activityModif, function (err, activityById) {
+            Activity.findByIdAndUpdate(req.params.id, activityModif, function (err, activityModifById) {
                 if (err) {
                     return next(err);
                 }
-                res.send("Activité modifiée avec succès \n");
+                res.send("Activité modifiée avec succès !");
             });
         } else {
-            res.send("Vous n'avez pas les droits pour modifier cette activité");
+            res.status(401).send("Vous n'avez pas les droits pour modifier cet activité");
         }
     });
 });
@@ -124,7 +137,7 @@ router.delete('/id/:id', authenticate, function (req, res, next) {
             return next(err);
         }
         //delete activity only if req.user._id == activityById.creator
-        if (req.user._id == activityById.creator || req.user.role == "admin") {
+        if (req.user._id.toString() === activityById.creator.toString() || req.user.role == "admin") {
             Activity.findByIdAndDelete(req.params.id, function (err, activityById) {
                 if (err) {
                     return next(err);
@@ -132,7 +145,7 @@ router.delete('/id/:id', authenticate, function (req, res, next) {
                 res.send("Activité supprimée avec succès");
             });
         } else {
-            res.send("Vous n'avez pas les droits pour supprimer cette activité");
+            res.status(401).send("Vous n'avez pas les droits pour modifier cet utilisateur");
         }
     });
 });

@@ -10,6 +10,37 @@ import axios from "axios";
 
 const router = express.Router();
 
+/* GET activity by user. */
+router.get('/user', authenticate, function (req, res, next) {
+    activity_user.find({
+        user: req.user._id
+    }).populate('activity').exec(function (err, activityByUser) {
+        if (err) {
+            return next(err);
+        }
+        res.send(activityByUser);
+    });
+
+});
+
+/* aggregate all activities by user */
+router.get('/user/aggregate', authenticate, function (req, res, next) {
+    activity_user.aggregate([{
+        $match: {
+            user: req.user._id
+        }
+    }, {
+        $group: {
+            _id: "$activity",
+        }
+    }]).exec(function (err, activityByUser) {
+        if (err) {
+            return next(err);
+        }
+        res.send(activityByUser);
+    });
+});
+
 /* JOIN activity for a user. */
 router.post('/join/:id', authenticate, function (req, res, next) {
     // find activity_user by activity and user
@@ -23,15 +54,25 @@ router.post('/join/:id', authenticate, function (req, res, next) {
         if (UserActivity) {
             res.send("Vous êtes déjà inscrit à cette activité");
         } else {
-            activity_user.create({
-                activity: req.params.id,
-                user: req.user._id,
-                inscription: Date.now() + 3600000
-            }, function (err, activityByUser) {
+            // find activity by id
+            Activity.findById(req.params.id).exec(function (err, activityById) {
                 if (err) {
                     return next(err);
                 }
-                res.send(activityByUser);
+                if (activityById) {
+                    activity_user.create({
+                        activity: req.params.id,
+                        user: req.user._id,
+                        inscription: Date.now() + 3600000
+                    }, function (err, activityByUser) {
+                        if (err) {
+                            return next(err);
+                        }
+                        res.send(activityByUser);
+                    });
+                } else {
+                    res.status(404).send("Activité non trouvée");
+                }
             });
         }
     });
@@ -49,7 +90,7 @@ router.delete('/leave/:id', authenticate, function (req, res, next) {
         if (UserActivity) {
             res.send("Vous avez quitté l'activité");
         } else {
-            res.send("Vous n'êtes pas inscrit à cette activité");
+            res.status(404).send("Vous n'êtes pas inscrit à cette activité");
         }
     });
 });
