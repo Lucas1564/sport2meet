@@ -345,28 +345,32 @@ router.post('/', authenticate, function (req, res, next) {
         .then(response => {
             latitude = response.data.data[0].latitude;
             longitude = response.data.data[0].longitude;
-            newActivity.location = {
-                type: "Point",
-                coordinates: [latitude, longitude]
-            };
-            // Save that document
-            newActivity.save(function (err, savedActivity) {
-                if (err) {
-                    return next(err);
-                }
-                // Link the activity to the user
-                const newActivity_User = new activity_user({
-                    activity: savedActivity._id,
-                    user: savedActivity.creator,
-                    inscription: new Date(new Date().getTime() + 2 * 60 * 60 * 1000),
-                });
-                newActivity_User.save(function (err, savedActivity_User) {
+            if (latitude != 0 && longitude != 0) {
+                newActivity.location = {
+                    type: "Point",
+                    coordinates: [latitude, longitude]
+                };
+                // Save that document
+                newActivity.save(function (err, savedActivity) {
                     if (err) {
                         return next(err);
                     }
-                    res.send(savedActivity);
+                    // Link the activity to the user
+                    const newActivity_User = new activity_user({
+                        activity: savedActivity._id,
+                        user: savedActivity.creator,
+                        inscription: new Date(new Date().getTime() + 2 * 60 * 60 * 1000),
+                    });
+                    newActivity_User.save(function (err, savedActivity_User) {
+                        if (err) {
+                            return next(err);
+                        }
+                        res.send(savedActivity);
+                    });
                 });
-            });
+            } else {
+                res.status(500).send("Adresse non valide");
+            }
         })
         .catch(error => {
             return next(error);
