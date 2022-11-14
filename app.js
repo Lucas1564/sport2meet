@@ -22,7 +22,7 @@ app.use(express.urlencoded({
   extended: false
 }));
 
-app.use("/", indexRouter);
+app.use("/", express.static("docs"));
 app.use("/docs", express.static("docs"));
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
