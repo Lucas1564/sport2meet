@@ -37,7 +37,7 @@ router.get('/user/aggregate', authenticate, function (req, res, next) {
         if (err) {
             return next(err);
         }
-        res.send(activityByUser);
+        res.send("Vous avez participé à " + activityByUser.length + " activités");
     });
 });
 

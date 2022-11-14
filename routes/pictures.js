@@ -91,4 +91,116 @@ router.post('/activity/:id', authenticate, fileUpload({
     });
 });
 
+/* GET picture by activity. */
+router.get('/activity/:id', function (req, res, next) {
+    Picture.find({
+        activity: req.params.id
+    }).populate('creator').exec(function (err, pictureByActivity) {
+        if (err) {
+            return next(err);
+        }
+        if (pictureByActivity) {
+            res.send(pictureByActivity);
+        } else {
+            res.send("Aucune photo pour cette activité");
+        }
+    });
+});
+
+/* GET picture by user. */
+router.get('/user/:id', function (req, res, next) {
+    Picture.find({
+        creator: req.params.id
+    }).populate('activity').exec(function (err, pictureByUser) {
+        if (err) {
+            return next(err);
+        }
+        if (pictureByUser) {
+            res.send(pictureByUser);
+        } else {
+            res.send("Aucune photo pour cet utilisateur");
+        }
+    });
+});
+
+/* PATCH picture by id. */
+router.patch('/:id', authenticate, fileUpload({
+    limits: {
+        fileSize: 50 * 1024 * 1024,
+        createParentPath: true,
+    },
+}), function (req, res, next) {
+    Picture.findById(req.params.id).exec(async function (err, picture) {
+        if (err) {
+            return next(err);
+        }
+        if (picture.creator == req.user._id || req.user.role == "admin") {
+            if (picture) {
+                if (req.files === null) {
+                    return res.status(400).json({
+                        msg: 'No file uploaded'
+                    });
+                }
+                // Delete old picture
+                fs.unlink(picture.path, (err) => {
+                    if (err) {
+                        console.error(err)
+                        return res.status(500).send(err);
+                    }
+                });
+                const image = req.files.picture;
+                const name = image.name;
+                const path = __dirname + '/public/upload/' + Date.now() + "_" + name;
+                image.mv(path, function (err) {
+                    if (err) {
+                        console.error(err);
+                        return res.status(500).send(err);
+                    }
+                });
+                picture.name = Date.now() + "_" + name;
+                picture.path = path;
+                picture.mimetype = image.mimetype;
+                picture.size = image.size;
+                picture.createAt = Date.now();
+                await picture.save();
+                res.send("Picture updated !");
+            } else {
+                res.status(404).send("Picture not found");
+            }
+        } else {
+            res.status(403).send("Vous n'avez pas les droits pour modifier cette photo");
+        }
+    });
+});
+
+/* DELETE picture by id. */
+router.delete('/:id', authenticate, function (req, res, next) {
+    Picture.findById(req.params.id).exec(function (err, picture) {
+        if (err) {
+            return next(err);
+        }
+        if (picture) {
+            if (picture.creator.toString() == req.user._id.toString() || req.user.role == "admin") {
+                fs.unlink(picture.path, (err) => {
+                    if (err) {
+                        console.error(err)
+                        return res.status(500).send(err);
+                    }
+                });
+                Picture.findByIdAndRemove(req.params.id, function (err, picture) {
+                    if (err) {
+                        return next(err);
+                    }
+                    res.send("Picture deleted");
+                });
+            } else {
+                res.status(403).send("Vous n'êtes pas le propriétaire de cette photo");
+            }
+        } else {
+            res.send("Cette photo n'existe pas");
+        }
+    });
+});
+
+
 export default router;
