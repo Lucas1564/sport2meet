@@ -12,6 +12,7 @@ import url from '../config.js'
 import fileUpload from "express-fileupload";
 import fs from "fs";
 
+
 const router = express.Router();
 const __dirname = fs.realpathSync('.');
 
@@ -21,8 +22,8 @@ router.get('/', function (req, res, next) {
         if (err) {
             return next(err);
         }
-
         let query = Activity.find();
+
         // Parse the "page" param (default to 1 if invalid)
         let page = parseInt(req.query.page, 10);
         if (isNaN(page) || page < 1) {
@@ -71,6 +72,26 @@ router.get('/', function (req, res, next) {
             res.set('Link', formatLinkHeader(links));
         }
 
+        // Filter activities by sport
+        if (req.query.sport) {
+            query = query.where('sport').equals(req.query.sport);
+        }
+
+        // Filter activities by locality
+        if (req.query.locality) {
+            query = query.where('locality').equals(req.query.locality);
+        }
+
+        // Filter activities by npa
+        if (req.query.npa) {
+            query = query.where('npa').equals(req.query.npa);
+        }
+
+        // Filter activities by type
+        if (req.query.type) {
+            query = query.where('type').equals(req.query.type);
+        }
+
         //Display the activities
         query.sort('sport').exec(function (err, activities) {
             if (err) {
@@ -81,7 +102,6 @@ router.get('/', function (req, res, next) {
 
     });
 });
-
 
 
 
