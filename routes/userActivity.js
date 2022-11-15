@@ -4,10 +4,11 @@ import User from "../models/user.js"
 import activity_user from "../models/activity_user.js"
 import Conversation from "../models/conversation.js"
 import {
+    sendMessageToSpecificUser
+} from "../ws.js";
+import {
     authenticate
 } from "./auth.js";
-import geocoder from "node-geocoder";
-import axios from "axios";
 
 const router = express.Router();
 
@@ -99,6 +100,26 @@ router.post('/join/:id', authenticate, function (req, res, next) {
                             if (conversation) {
                                 conversation.users.push(req.user._id);
                                 conversation.save();
+                                conversation.users.forEach(user => {
+                                    if (user.toString() != req.user._id.toString()) {
+                                        sendMessageToSpecificUser({
+                                            "data": {
+                                                "message": {
+                                                    "content": "L'utilisateur " + req.user.firstname + " " + req.user.lastname + " a rejoint l'activité",
+                                                },
+                                                "conversation": {
+                                                    "id": conversation._id,
+                                                    "name": conversation.name,
+                                                },
+                                                "sender": {
+                                                    "id": req.user._id,
+                                                    "username": req.user.firstname + " " + req.user.lastname,
+                                                },
+                                                "date": Date.now()
+                                            },
+                                        }, user, "JOIN_ACTIVITY");
+                                    }
+                                });
                             }
                         });
                         res.send(activityByUser);
@@ -145,6 +166,26 @@ router.delete('/leave/:id', authenticate, function (req, res, next) {
                 if (conversation) {
                     conversation.users.pull(req.user._id);
                     conversation.save();
+                    conversation.users.forEach(user => {
+                        if (user.toString() != req.user._id.toString()) {
+                            sendMessageToSpecificUser({
+                                "data": {
+                                    "message": {
+                                        "content": "L'utilisateur " + req.user.firstname + " " + req.user.lastname + " a quitté l'activité",
+                                    },
+                                    "conversation": {
+                                        "id": conversation._id,
+                                        "name": conversation.name,
+                                    },
+                                    "sender": {
+                                        "id": req.user._id,
+                                        "username": req.user.firstname + " " + req.user.lastname,
+                                    },
+                                    "date": Date.now()
+                                },
+                            }, user, "LEAVE_ACTIVITY");
+                        }
+                    });
                 }
             });
             res.send("Vous avez quitté l'activité");

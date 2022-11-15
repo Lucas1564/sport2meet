@@ -3,6 +3,7 @@ import {
     WebSocketServer
 } from 'ws';
 import {
+    authenticate,
     tokenToUser
 } from "./routes/auth.js";
 
@@ -18,28 +19,27 @@ export function createWebSocketServer(httpServer) {
 
     // Handle new user connections.
     wss.on('connection', async function (ws, req) {
-        console.log('New WebSocket user connected');
+        console.log('New WebSocket client connected');
 
-        console.log(`User 1 connected`);
+        const user = await tokenToUser(req);
+        if (!user) {
+            console.log('User not authenticated');
+            ws.send('User not authenticated');
+            ws.close();
+            return;
+        }
 
+        console.log(`User authenticated: ${user.email}`);
+
+        // Keep track of clients.
         users.push({
-            "id": '635014f38b00417356140522',
+            "id": user._id,
             "socket": ws
         });
-
         // Listen for messages sent by users.
         ws.on('message', (message) => {
-            // Make sure the message is valid JSON.
-            let parsedMessage;
-            try {
-                parsedMessage = JSON.parse(message);
-            } catch (err) {
-                // Send an error message to the user with "ws" if you want...
-                return console.log('Invalid JSON message received from user');
-            }
-
-            // Handle the message.
-            onMessageReceived(ws, parsedMessage);
+            const rawMessage = String(message);
+            onMessageReceived(ws, rawMessage);
         });
 
         // Clean up disconnected users.
@@ -53,7 +53,7 @@ export function createWebSocketServer(httpServer) {
 export function sendMessageToSpecificUser(message, userID, code) {
 
     // Find the user with the given ID.
-    const user = users.find(user => user.id == userID);
+    const user = users.find(user => user.id.toString() == userID.toString());
 
     if (user) {
         // Send the message to the user.
@@ -69,5 +69,5 @@ export function sendMessageToSpecificUser(message, userID, code) {
 function onMessageReceived(ws, message) {
     console.log(`Received WebSocket message: ${JSON.stringify(message)}`);
     // Do something with message...
-    ws.send("Message : " + message.message);
+    ws.send("Message : " + message);
 }

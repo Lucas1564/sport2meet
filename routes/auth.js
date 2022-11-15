@@ -106,11 +106,10 @@ export function tokenToUser(req) {
     const token = authHeader.split(' ')[1];
     if (!token) return null;
 
-    return new Promise((resolve, reject) => {
-        jwt.verify(token, config.jwt.secret, async (err, res) => {
-            if (err) reject(err);
-            const _user = await User.findById(res.id)
-            resolve(_user);
-        })
-    })
+    try {
+        const payload = jwt.verify(token, config.jwtSecret);
+        return User.findById(payload.sub);
+    } catch (err) {
+        return null;
+    }
 }
