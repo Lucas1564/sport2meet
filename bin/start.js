@@ -8,8 +8,11 @@ import app from "../app.js";
 import * as config from "../config.js";
 import createDebugger from "debug";
 import http from "http";
+import {
+  createWebSocketServer
+} from '../ws.js';
 
-const debug = createDebugger('projet:server')
+const debug = createDebugger('sport2meet-api:server')
 /**
  * Get port from environment and store in Express.
  */
@@ -22,6 +25,7 @@ app.set("port", port);
  */
 
 const server = http.createServer(app);
+createWebSocketServer(server);
 
 /**
  * Listen on provided port, on all network interfaces.

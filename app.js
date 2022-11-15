@@ -10,6 +10,7 @@ import userActivityRouter from "./routes/userActivity.js";
 import picturesRouter from "./routes/pictures.js";
 import mongoose from 'mongoose';
 import * as config from "./config.js";
+import conversationRouter from "./routes/conversations.js";
 
 mongoose.Promise = Promise;
 mongoose.connect(config.databaseUrl);
@@ -30,6 +31,7 @@ app.use("/activities", activitiesRouter);
 app.use("/comments", commentsRouter);
 app.use("/userActivity", userActivityRouter);
 app.use("/pictures", picturesRouter);
+app.use("/conversations", conversationRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

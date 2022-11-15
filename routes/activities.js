@@ -11,6 +11,7 @@ import formatLinkHeader from 'format-link-header';
 import url from '../config.js'
 import fileUpload from "express-fileupload";
 import fs from "fs";
+import Conversation from "../models/conversation.js";
 
 const router = express.Router();
 const __dirname = fs.realpathSync('.');
@@ -365,8 +366,18 @@ router.post('/', authenticate, function (req, res, next) {
                         if (err) {
                             return next(err);
                         }
-                        res.send(savedActivity);
                     });
+                    const conversation = new Conversation({
+                        activity: savedActivity._id,
+                        users: [savedActivity.creator],
+                        name: "Conversation de l'activité " + savedActivity._id,
+                    });
+                    conversation.save(function (err, savedConversation) {
+                        if (err) {
+                            return next(err);
+                        }
+                    });
+                    res.send(savedActivity);
                 });
             } else {
                 res.status(500).send("Adresse non valide");

@@ -4,23 +4,27 @@ const Schema = mongoose.Schema;
 
 // Define a schema for comment
 const commentSchema = new Schema({
-	content : {
-		type : String,
-		required : true,
-		minlenght : [2, "Content is too short"],
-		maxlenght : 100
+	content: {
+		type: String,
+		required: true,
+		minlenght: [2, "Content is too short"],
+		maxlenght: 400
 	},
 	creator: {
 		type: Schema.Types.ObjectId,
 		ref: 'User',
 		required: true,
 	},
-	// activity : {
-	// 	type : Schema.Type.ObjectId(),
-	// 	ref : 'Activity'
-	// },
-	date : { type: Date, default: Date.now  }
+	conversation: {
+		type: Schema.Types.ObjectId,
+		ref: 'Conversation',
+		required: true,
+	},
+	date: {
+		type: Date,
+		default: Date.now
+	}
 });
 
 //create model
-export default mongoose.model('Comment',commentSchema);
+export default mongoose.model('Comment', commentSchema);

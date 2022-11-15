@@ -1,5 +1,9 @@
 import express from "express";
 import Comment from "../models/comment.js"
+import Conversation from "../models/conversation.js";
+import {
+  sendMessageToSpecificUser
+} from "../ws.js";
 import {
   authenticate
 } from "./auth.js";
@@ -9,7 +13,12 @@ const router = express.Router();
 
 /* GET comments listing. */
 router.get('/', authenticate, function (req, res, next) {
-  Comment.find().sort('content').exec(function (err, comments) {
+  const page = parseInt(req.query.page) || 1;
+  const perPage = parseInt(req.query.perPage) || 50;
+  const skip = (page - 1) * perPage;
+
+  //populate creator and conversation
+  Comment.find().sort('content').skip(skip).limit(perPage).populate('creator').populate('conversation').exec(function (err, comments) {
     if (err) {
       return next(err);
     }
@@ -17,21 +26,50 @@ router.get('/', authenticate, function (req, res, next) {
   });
 });
 
+
 /* POST new comment */
-router.post('/activities=:id', authenticate, function (req, res, next) {
-  // Create a new document from the JSON in the request body
-  const newComment = new Comment(req.body);
-  newComment.activity = req.params.id;
-  newComment.user = req.user._id;
-  // Save that document
-  newComment.save(function (err, savedComment) {
+router.post('/conversation=:id', authenticate, function (req, res, next) {
+  Conversation.findById(req.params.id, function (err, conversationById) {
     if (err) {
       return next(err);
     }
-    // Send the saved document in the response
-    res.send(savedComment);
+    // Create a new document from the JSON in the request body
+    const newComment = new Comment(req.body);
+    newComment.conversation = req.params.id;
+    newComment.creator = req.user._id;
+    newComment.date = new Date();
+    // Save that document
+    newComment.save(function (err, savedComment) {
+      if (err) {
+        return next(err);
+      }
+      // Send the saved document in the response
+      conversationById.users.forEach(user => {
+        if (user != req.user._id) {
+          sendMessageToSpecificUser({
+            "data": {
+              "message": {
+                "id": savedComment._id,
+                "content": savedComment.content,
+              },
+              "conversation": {
+                "id": conversationById._id,
+                "name": conversationById.name,
+              },
+              "sender": {
+                "id": req.user._id,
+                "username": req.user.firstname + " " + req.user.lastname,
+              },
+              "date": savedComment.date
+            },
+          }, user, "NEW_MESSAGE");
+        }
+      });
+      res.send(savedComment);
+    });
   });
 });
+
 
 /* DELETE comment by id */
 router.delete('/id/:id', authenticate, function (req, res) {
