@@ -35,8 +35,10 @@ const userSchema = new Schema({
 	}
 });
 
+// Define a virtual property for the user's password.
 userSchema.virtual('password');
 
+// Save the user's password as a hash.
 userSchema.pre('save', async function () {
 	if (this.password && this.password.length >= 8) {
 		const passwordHash = await bcrypt.hash(this.password, config.bcryptCostFactor);
@@ -50,6 +52,7 @@ userSchema.set("toJSON", {
 	transform: transformJsonUser
 });
 
+// Set to JSON transformation to remove the password hash.
 function transformJsonUser(doc, json, options) {
 	// Remove the hashed password from the generated JSON.
 	delete json.passwordHash;

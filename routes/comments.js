@@ -43,9 +43,10 @@ router.post('/conversation=:id', authenticate, function (req, res, next) {
       if (err) {
         return next(err);
       }
-      // Send the saved document in the response
+      // For each user in the conversation, send a message to the websocket
       conversationById.users.forEach(user => {
         if (user.toString() != req.user._id.toString()) {
+          // Send a message to specific user with CODE NEW_MESSAGE
           sendMessageToSpecificUser({
             "data": {
               "message": {
@@ -77,6 +78,7 @@ router.delete('/id/:id', authenticate, function (req, res) {
     if (err) {
       return next(err);
     }
+    // Check if the user is the creator of the comment or an admin
     if (commentById.user == req.user._id || req.user.role == "admin") {
       Comment.findByIdAndDelete(req.params.id, function (err, commentById) {
         if (err) {
@@ -86,8 +88,10 @@ router.delete('/id/:id', authenticate, function (req, res) {
           if (err) {
             return next(err);
           }
+          // For each user in the conversation, send a message to the websocket
           conversationById.users.forEach(user => {
             if (user.toString() != req.user._id.toString()) {
+              // Send a message to specific user with CODE DELETE_MESSAGE
               sendMessageToSpecificUser({
                 "data": {
                   "message": {
@@ -119,11 +123,11 @@ router.delete('/id/:id', authenticate, function (req, res) {
 
 /* PATCH comment */
 router.patch('/id/:id', authenticate, function (req, res) {
-  //if creator = req.id or role = admin, update comment
   Comment.findByid(req.params.id).exec(function (err, commentById) {
     if (err) {
       return next(err);
     }
+    // Check if the user is the creator of the comment or an admin
     if (commentById.user == req.user._id || req.user.role == "admin") {
       Comment.findByIdAndUpdate(req.params.id, req.body, function (err, commentById) {
         if (err) {
@@ -133,8 +137,10 @@ router.patch('/id/:id', authenticate, function (req, res) {
           if (err) {
             return next(err);
           }
+          // For each user in the conversation, send a message to the websocket
           conversationById.users.forEach(user => {
             if (user.toString() != req.user._id.toString()) {
+              // Send a message to specific user with CODE UPDATE_MESSAGE
               sendMessageToSpecificUser({
                 "data": {
                   "message": {

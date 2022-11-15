@@ -73,6 +73,7 @@ router.post('/join/:id', authenticate, function (req, res, next) {
         if (err) {
             return next(err);
         }
+        // Test if user is already in activity
         if (UserActivity) {
             res.send("Vous êtes déjà inscrit à cette activité");
         } else {
@@ -81,7 +82,9 @@ router.post('/join/:id', authenticate, function (req, res, next) {
                 if (err) {
                     return next(err);
                 }
+                // If activity is found
                 if (activityById) {
+                    // Create new activity_user
                     activity_user.create({
                         activity: req.params.id,
                         user: req.user._id,
@@ -90,18 +93,22 @@ router.post('/join/:id', authenticate, function (req, res, next) {
                         if (err) {
                             return next(err);
                         }
-                        // join conversation
+                        // Join the conversation of the activity
                         Conversation.findOne({
                             activity: req.params.id
                         }).exec(function (err, conversation) {
                             if (err) {
                                 return next(err);
                             }
+                            // If conversation is found
                             if (conversation) {
+                                // Add user to conversation
                                 conversation.users.push(req.user._id);
                                 conversation.save();
+                                // Send message to user to inform him that he joined the activity
                                 conversation.users.forEach(user => {
                                     if (user.toString() != req.user._id.toString()) {
+                                        // Send message to user to inform him that he joined the activity CODE JOIN_ACTIVITY
                                         sendMessageToSpecificUser({
                                             "data": {
                                                 "message": {
@@ -163,11 +170,15 @@ router.delete('/leave/:id', authenticate, function (req, res, next) {
                 if (err) {
                     return next(err);
                 }
+                // If conversation is found
                 if (conversation) {
+                    // Remove user from conversation
                     conversation.users.pull(req.user._id);
                     conversation.save();
+                    // Send message to user to inform him that he left the activity
                     conversation.users.forEach(user => {
                         if (user.toString() != req.user._id.toString()) {
+                            // Send message to user to inform him that he left the activity CODE LEAVE_ACTIVITY
                             sendMessageToSpecificUser({
                                 "data": {
                                     "message": {

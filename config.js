@@ -5,11 +5,13 @@ try {
   // Ignore missing dotenv
 }
 
+// Create constants for the environment variables
 export const databaseUrl = process.env.DATABASE_URL || 'mongodb://127.0.0.1/sport-2-meet';
 export const port = process.env.PORT || '3000';
 export const jwtSecret = process.env.JWT_SECRET;
 export const bcryptCostFactor = 10;
 
+// Test if jwtSecret is set and throw an error if not
 if (!jwtSecret) {
   throw new Error('Environment variable $JWT_SECRET is required');
 }

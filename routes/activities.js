@@ -340,13 +340,18 @@ router.post('/', authenticate, function (req, res, next) {
     req.body.creator = req.user._id;
     // Create a new document from the JSON in the request body
     const newActivity = new Activity(req.body);
+    // Initialize the location field
     var latitude = 0;
     var longitude = 0;
+    //get latitude and longitude from address, locality and npa with geocoder
     axios.get('http://api.positionstack.com/v1/forward?access_key=f2c6db61c5b566356d8fc580c9f8ca13&query=' + newActivity.npa + ' ' + newActivity.locality + ',' + newActivity.address)
         .then(response => {
+            // Set the coordinates field from the geocoder response
             latitude = response.data.data[0].latitude;
             longitude = response.data.data[0].longitude;
+            // Test if the coordinates are valid
             if (latitude != 0 && longitude != 0) {
+                // Create a GeoJSON point from the coordinates
                 newActivity.location = {
                     type: "Point",
                     coordinates: [latitude, longitude]
@@ -367,6 +372,7 @@ router.post('/', authenticate, function (req, res, next) {
                             return next(err);
                         }
                     });
+                    // Create a conversation for the activity
                     const conversation = new Conversation({
                         activity: savedActivity._id,
                         users: [savedActivity.creator],

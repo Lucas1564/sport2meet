@@ -1,3 +1,8 @@
+/**
+ * ---------------------------------------------------------------------------------------
+ * Import the dependencies
+ * ---------------------------------------------------------------------------------------
+ */
 import createDebugger from 'debug';
 import {
     WebSocketServer
@@ -9,9 +14,19 @@ import {
 
 const debug = createDebugger('express-api:messaging');
 
+// Table of connected WebSocket clients
 const users = [];
 
+/**
+ * @param {*} server
+ * @returns 
+ * 
+ * Create a WebSocket server
+ * 
+ */
 export function createWebSocketServer(httpServer) {
+
+    // Create a WebSocket server
     console.log('Creating WebSocket server');
     const wss = new WebSocketServer({
         server: httpServer,
@@ -21,6 +36,7 @@ export function createWebSocketServer(httpServer) {
     wss.on('connection', async function (ws, req) {
         console.log('New WebSocket client connected');
 
+        // Get the user from the request via the authentication
         const user = await tokenToUser(req);
         if (!user) {
             console.log('User not authenticated');
@@ -50,6 +66,14 @@ export function createWebSocketServer(httpServer) {
     });
 }
 
+/**
+ * 
+ * @param {*} message 
+ * @param {*} userID 
+ * @param {*} code 
+ * 
+ * Send a message to a specific user
+ */
 export function sendMessageToSpecificUser(message, userID, code) {
 
     // Find the user with the given ID.
@@ -61,11 +85,17 @@ export function sendMessageToSpecificUser(message, userID, code) {
         user.socket.send(JSON.stringify({
             message: message,
             code: code
-
         }));
     }
 }
 
+/**
+ * 
+ * @param {*} ws 
+ * @param {*} message 
+ * 
+ * Handle a message received from a user
+ */
 function onMessageReceived(ws, message) {
     console.log(`Received WebSocket message: ${JSON.stringify(message)}`);
     // Do something with message...

@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-// Define a schema for comment
+// Define a schema for picture
 const pictureSchema = new Schema({
 	name: {
 		type: String,

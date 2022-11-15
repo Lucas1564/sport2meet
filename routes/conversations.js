@@ -36,6 +36,7 @@ router.post('/activity=:id', authenticate, function (req, res, next) {
 
 /* DELETE conversation by id */
 router.delete('/id/:id', authenticate, function (req, res) {
+    // Only admins can delete conversations
     if (req.user.role == "admin") {
         Conversation.findByIdAndDelete(req.params.id, function (err, conversationById) {
             if (err) {
@@ -49,8 +50,38 @@ router.delete('/id/:id', authenticate, function (req, res) {
     }
 });
 
+/* ADD user to conversation */
+router.patch('/addUser/conversation=:convId', authenticate, function (req, res) {
+    Conversation.findById(req.params.convId).exec(function (err, conversationById) {
+        if (err) {
+            return next(err);
+        }
+        // Only admins can edit conversations
+        if (req.user.role == "admin") {
+            // Check if the user is already in the conversation
+            if (conversationById.users.includes(req.body.user)) {
+                res.status(401).send("L'utilisateur est déjà dans la conversation");
+            } else {
+                // Add the user to the conversation
+                conversationById.users.push(req.body.user);
+                // Save the conversation
+                Conversation.findByIdAndUpdate(req.params.convId, conversationById, function (err, conversationById) {
+                    if (err) {
+                        return next(err);
+                    }
+                    // Send the saved document in the response
+                    res.send(conversationById);
+                });
+            }
+        } else {
+            res.status(401).send("Vous n'avez pas les droits pour ajouter un utilisateur à la conversation");
+        }
+    });
+});
+
 /* PATCH conversation */
 router.patch('/id/:id', authenticate, function (req, res) {
+    // Only admins can edit conversations
     if (req.user.role == "admin") {
         Conversation.findByIdAndUpdate(req.params.id, req.body, function (err, conversationById) {
             if (err) {

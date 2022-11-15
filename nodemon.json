@@ -3,6 +3,7 @@
       "app.js",
       "bin/start.js",
       "routes/**/*",
-      "models/**/*"
+      "models/**/*",
+      "ws.js"
     ]
 }

@@ -40,8 +40,10 @@ router.post('/login', async (req, res, next) => {
 
         const password = req.body.password;
         const passwordHash = user.passwordHash;
+        // Compare the password with the hash
         const valid = await bcrypt.compare(password, passwordHash);
         if (valid) {
+            // Create a token
             const subject = user._id;
             const expiresIn = '7 days';
             jwt.sign({
@@ -67,8 +69,11 @@ router.post('/login', async (req, res, next) => {
 
 export default router;
 
+
 export function authenticate(req, res, next) {
+    // Get the token from the request header
     const authorizationHeader = req.get('Authorization');
+    // Check if the header is present
     if (!authorizationHeader) {
         return res.sendStatus(401);
     }
@@ -79,6 +84,7 @@ export function authenticate(req, res, next) {
     }
 
     const bearerToken = match[1];
+    // Verify the token
     jwt.verify(bearerToken, config.jwtSecret, (err, payload) => {
         if (err) {
             return res.sendStatus(401);

@@ -1,3 +1,4 @@
+// import the dependencies
 import express from "express";
 import createError from "http-errors";
 import logger from "morgan";
@@ -15,6 +16,7 @@ import conversationRouter from "./routes/conversations.js";
 mongoose.Promise = Promise;
 mongoose.connect(config.databaseUrl);
 
+// create the express app
 const app = express();
 
 // Log requests (except in test mode).
@@ -26,6 +28,7 @@ app.use(express.urlencoded({
   extended: false
 }));
 
+// Routes
 app.use("/", express.static("docs"));
 app.use("/docs", express.static("docs"));
 app.use("/users", usersRouter);

@@ -15,21 +15,21 @@ const router = express.Router();
 const __dirname = fs.realpathSync('.');
 
 /**
-* @api {post} /pictures/activity/:id Create a picture
-* @apiGroup picture
-* @apiName CreatePicture
-* @apiBody {String} name
-* @apiParam (picture) id Id of activity
-* @apiExample Create a picture
-* Authorization:Bearer sjkshrbgflkergERGHERIGAwk
-* POST 127.0.0.1:3000/pictures/activity/6371f92c3e3b5d0a631b4097
-* form-data :
-* Key : pictures (files)
-* Value : Capture d'écran_20221111_085342.png
-* @apiSuccessExample {html} Create a user :
-* Status : 200 OK
-* 1 picture uploaded !
-*/
+ * @api {post} /pictures/activity/:id Create a picture
+ * @apiGroup picture
+ * @apiName CreatePicture
+ * @apiBody {String} name
+ * @apiParam (picture) id Id of activity
+ * @apiExample Create a picture
+ * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+ * POST 127.0.0.1:3000/pictures/activity/6371f92c3e3b5d0a631b4097
+ * form-data :
+ * Key : pictures (files)
+ * Value : Capture d'écran_20221111_085342.png
+ * @apiSuccessExample {html} Create a user :
+ * Status : 200 OK
+ * 1 picture uploaded !
+ */
 /* POST picture for activity */
 router.post('/activity/:id', authenticate, fileUpload({
     limits: {
@@ -37,6 +37,7 @@ router.post('/activity/:id', authenticate, fileUpload({
     },
     createParentPath: true,
 }), function (req, res, next) {
+    // Test if the user participate to the activity
     activity_user.findOne({
         activity: req.params.id,
         user: req.user._id
@@ -44,7 +45,9 @@ router.post('/activity/:id', authenticate, fileUpload({
         if (err) {
             return next(err);
         }
+        // If the user participate to the activity
         if (UserActivity) {
+            // Test if files exist
             if (req.files === null) {
                 return res.status(400).json({
                     msg: 'No file uploaded'
@@ -53,16 +56,21 @@ router.post('/activity/:id', authenticate, fileUpload({
 
             const images = req.files.picture;
             var nbrImages = images.length;
+            // If there is only one image uploaded
             if (nbrImages === undefined) {
+                // Set the variable for the image uploaded
                 const image = images;
                 const name = image.name;
+                // Set the path for the image
                 const path = __dirname + '/public/upload/' + Date.now() + "_" + name;
+                // Move the image to the path
                 image.mv(path, function (err) {
                     if (err) {
                         console.error(err);
                         return res.status(500).send(err);
                     }
                 });
+                // Create a new document from the JSON in the request body
                 const picture = new Picture({
                     name: Date.now() + "_" + name,
                     path: path,
@@ -72,18 +80,23 @@ router.post('/activity/:id', authenticate, fileUpload({
                     size: image.size,
                     createAt: Date.now()
                 });
+                // Save the document in the database
                 await picture.save();
             } else {
+                // If there is more than one image uploaded
                 for (let i = 0; i < nbrImages; i++) {
                     const image = images[i];
                     const name = image.name;
+                    // Set the path for the image
                     const path = __dirname + '/public/upload/' + Date.now() + "_" + name;
+                    // Move the image to the path
                     image.mv(path, function (err) {
                         if (err) {
                             console.error(err);
                             return res.status(500).send(err);
                         }
                     });
+                    // Create a new document from the JSON in the request body
                     const picture = new Picture({
                         name: Date.now() + "_" + name,
                         path: path,
@@ -93,9 +106,11 @@ router.post('/activity/:id', authenticate, fileUpload({
                         size: image.size,
                         createAt: Date.now()
                     });
+                    // Save the document in the database
                     await picture.save();
                 }
             }
+            // Send a response
             if (nbrImages > 1) {
                 res.send(nbrImages + ' pictures uploaded !');
             } else {
@@ -175,79 +190,79 @@ router.get('/activity/:id', function (req, res, next) {
 });
 
 /**
-* @api {get} /pictures/user/:id Get picture by user
-* @apiGroup picture
-* @apiName GetPictureByUser
-* @apiParam (picture) id Id of user
-* @apiExample Get picture for user 6371f1f63e3b5d0a631b4080
-* Authorization:Bearer sjkshrbgflkergERGHERIGAwk
-* GET 127.0.0.1:3000/pictures/user/6371f1f63e3b5d0a631b4080
-* @apiSuccessExample {html} Get picture for user 6371f1f63e3b5d0a631b4080:
-*Status : 200 OK
-*[
-*    {
-*        "_id": "63724a26b05e21878f3aabab",
-*        "name": "1668434470330_013_10.JPG",
-*        "creator": "6371f1f63e3b5d0a631b4080",
-*        "path": "C:\\Users\\Maintenant Pret\\Documents\\ArchiOWeb\\projet\\sport2meet/public/upload/1668434470329_013_10.JPG",
-*        "activity": {
-*            "location": {
-*                "type": "Point",
-*                "coordinates": [
-*                    46.779117,
-*                    6.64187
-*                ]
-*            },
-*            "_id": "6371f92c3e3b5d0a631b4097",
-*            "description": "test activité",
-*            "sport": "Course",
-*            "address": "Avenue des sports 4",
-*            "npa": 1400,
-*            "locality": "Yverdon",
-*            "players": 5,
-*           "datetime": "2022-04-23T18:25:43.511Z",
-*            "type": "Evénement",
-*            "creator": "6371f1f63e3b5d0a631b4080",
-*            "__v": 0
-*        },
-*        "mimetype": "image/jpeg",
-*        "size": 375154,
-*        "createAt": "2022-11-14T14:01:10.330Z",
-*        "__v": 0
-*   },
-*    {
-*        "_id": "63724ad089244a774a587221",
-*        "name": "1668434640346_013_10.JPG",
-*        "creator": "6371f1f63e3b5d0a631b4080",
-*        "path": "C:\\Users\\Maintenant Pret\\Documents\\ArchiOWeb\\projet\\sport2meet/public/upload/1668434640345_013_10.JPG",
-*        "activity": {
-*            "location": {
-*                "type": "Point",
-*                "coordinates": [
-*                    46.779117,
-*                    6.64187
-*                ]
-*            },
-*            "_id": "6371f92c3e3b5d0a631b4097",
-*            "description": "test activité",
-*            "sport": "Course",
-*            "address": "Avenue des sports 4",
-*            "npa": 1400,
-*            "locality": "Yverdon",
-*            "players": 5,
-*            "datetime": "2022-04-23T18:25:43.511Z",
-*            "type": "Evénement",
-*            "creator": "6371f1f63e3b5d0a631b4080",
-*            "__v": 0
-*        },
-*        "mimetype": "image/jpeg",
-*        "size": 375154,
-*        "createAt": "2022-11-14T14:04:00.346Z",
-*        "__v": 0
-*    },
-*]
-* @apiErrorExample {html} False user's id :
-*/
+ * @api {get} /pictures/user/:id Get picture by user
+ * @apiGroup picture
+ * @apiName GetPictureByUser
+ * @apiParam (picture) id Id of user
+ * @apiExample Get picture for user 6371f1f63e3b5d0a631b4080
+ * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+ * GET 127.0.0.1:3000/pictures/user/6371f1f63e3b5d0a631b4080
+ * @apiSuccessExample {html} Get picture for user 6371f1f63e3b5d0a631b4080:
+ *Status : 200 OK
+ *[
+ *    {
+ *        "_id": "63724a26b05e21878f3aabab",
+ *        "name": "1668434470330_013_10.JPG",
+ *        "creator": "6371f1f63e3b5d0a631b4080",
+ *        "path": "C:\\Users\\Maintenant Pret\\Documents\\ArchiOWeb\\projet\\sport2meet/public/upload/1668434470329_013_10.JPG",
+ *        "activity": {
+ *            "location": {
+ *                "type": "Point",
+ *                "coordinates": [
+ *                    46.779117,
+ *                    6.64187
+ *                ]
+ *            },
+ *            "_id": "6371f92c3e3b5d0a631b4097",
+ *            "description": "test activité",
+ *            "sport": "Course",
+ *            "address": "Avenue des sports 4",
+ *            "npa": 1400,
+ *            "locality": "Yverdon",
+ *            "players": 5,
+ *           "datetime": "2022-04-23T18:25:43.511Z",
+ *            "type": "Evénement",
+ *            "creator": "6371f1f63e3b5d0a631b4080",
+ *            "__v": 0
+ *        },
+ *        "mimetype": "image/jpeg",
+ *        "size": 375154,
+ *        "createAt": "2022-11-14T14:01:10.330Z",
+ *        "__v": 0
+ *   },
+ *    {
+ *        "_id": "63724ad089244a774a587221",
+ *        "name": "1668434640346_013_10.JPG",
+ *        "creator": "6371f1f63e3b5d0a631b4080",
+ *        "path": "C:\\Users\\Maintenant Pret\\Documents\\ArchiOWeb\\projet\\sport2meet/public/upload/1668434640345_013_10.JPG",
+ *        "activity": {
+ *            "location": {
+ *                "type": "Point",
+ *                "coordinates": [
+ *                    46.779117,
+ *                    6.64187
+ *                ]
+ *            },
+ *            "_id": "6371f92c3e3b5d0a631b4097",
+ *            "description": "test activité",
+ *            "sport": "Course",
+ *            "address": "Avenue des sports 4",
+ *            "npa": 1400,
+ *            "locality": "Yverdon",
+ *            "players": 5,
+ *            "datetime": "2022-04-23T18:25:43.511Z",
+ *            "type": "Evénement",
+ *            "creator": "6371f1f63e3b5d0a631b4080",
+ *            "__v": 0
+ *        },
+ *        "mimetype": "image/jpeg",
+ *        "size": 375154,
+ *        "createAt": "2022-11-14T14:04:00.346Z",
+ *        "__v": 0
+ *    },
+ *]
+ * @apiErrorExample {html} False user's id :
+ */
 /* GET picture by user. */
 router.get('/user/:id', function (req, res, next) {
     Picture.find({
@@ -265,21 +280,21 @@ router.get('/user/:id', function (req, res, next) {
 });
 
 /**
-* @api {patch} /pictures/:id Modify picture by id
-* @apiGroup picture
-* @apiName ModifyPictureBy)Id
-* @apiParam (picture) id Id of picture
-* @apiExample Get picture 
-* Authorization:Bearer sjkshrbgflkergERGHERIGAwk
-* PATCH 127.0.0.1:3000/pictures/63724939654d44c5b82c1d17
-* @apiSuccessExample {html} Get picture 63724939654d44c5b82c1d17:
-*
-* @apiErrorExample {html} False id of picture :
-*
-* @apiErrorExample {html} User is not the creator of the picture :
-* Status : 403 Forbidden
-* Vous n'avez pas les droits pour modifier cette photo
-*/
+ * @api {patch} /pictures/:id Modify picture by id
+ * @apiGroup picture
+ * @apiName ModifyPictureBy)Id
+ * @apiParam (picture) id Id of picture
+ * @apiExample Get picture 
+ * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+ * PATCH 127.0.0.1:3000/pictures/63724939654d44c5b82c1d17
+ * @apiSuccessExample {html} Get picture 63724939654d44c5b82c1d17:
+ *
+ * @apiErrorExample {html} False id of picture :
+ *
+ * @apiErrorExample {html} User is not the creator of the picture :
+ * Status : 403 Forbidden
+ * Vous n'avez pas les droits pour modifier cette photo
+ */
 /* PATCH picture by id. */
 router.patch('/:id', authenticate, fileUpload({
     limits: {
@@ -291,7 +306,9 @@ router.patch('/:id', authenticate, fileUpload({
         if (err) {
             return next(err);
         }
+        // Check if the user is the creator of the picture or an admin
         if (picture.creator == req.user._id || req.user.role == "admin") {
+            // Check if the user has uploaded a file
             if (picture) {
                 if (req.files === null) {
                     return res.status(400).json({
@@ -307,13 +324,16 @@ router.patch('/:id', authenticate, fileUpload({
                 });
                 const image = req.files.picture;
                 const name = image.name;
+                // Path to save the picture
                 const path = __dirname + '/public/upload/' + Date.now() + "_" + name;
+                // Move the picture to the path
                 image.mv(path, function (err) {
                     if (err) {
                         console.error(err);
                         return res.status(500).send(err);
                     }
                 });
+                // Save the new picture
                 picture.name = Date.now() + "_" + name;
                 picture.path = path;
                 picture.mimetype = image.mimetype;
@@ -330,18 +350,18 @@ router.patch('/:id', authenticate, fileUpload({
     });
 });
 /**
-* @api {delete} /pictures/:id Delete picture by id
-* @apiGroup picture
-* @apiName DeletePictureBy)Id
-* @apiParam (picture) id Id of picture
-* @apiExample Get picture 
-* Authorization:Bearer sjkshrbgflkergERGHERIGAwk
-* DELETE 127.0.0.1:3000/pictures/63724939654d44c5b82c1d17
-* @apiSuccessExample {html} Delete picture 63724939654d44c5b82c1d17:
-*
-* @apiErrorExample {html} False id of picture :
-*
-*/
+ * @api {delete} /pictures/:id Delete picture by id
+ * @apiGroup picture
+ * @apiName DeletePictureBy)Id
+ * @apiParam (picture) id Id of picture
+ * @apiExample Get picture 
+ * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+ * DELETE 127.0.0.1:3000/pictures/63724939654d44c5b82c1d17
+ * @apiSuccessExample {html} Delete picture 63724939654d44c5b82c1d17:
+ *
+ * @apiErrorExample {html} False id of picture :
+ *
+ */
 /* DELETE picture by id. */
 router.delete('/:id', authenticate, function (req, res, next) {
     Picture.findById(req.params.id).exec(function (err, picture) {
@@ -349,6 +369,7 @@ router.delete('/:id', authenticate, function (req, res, next) {
             return next(err);
         }
         if (picture) {
+            // Check if the user is the creator of the picture or an admin
             if (picture.creator.toString() == req.user._id.toString() || req.user.role == "admin") {
                 fs.unlink(picture.path, (err) => {
                     if (err) {
