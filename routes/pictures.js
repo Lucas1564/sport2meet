@@ -22,7 +22,7 @@ const __dirname = fs.realpathSync('.');
  * @apiParam (picture) id Id of activity
  * @apiExample Create a picture
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
- * POST 127.0.0.1:3000/pictures/activity/6371f92c3e3b5d0a631b4097
+ * POST https://sport-2-meet.onrender.com/pictures/activity/6371f92c3e3b5d0a631b4097
  * form-data :
  * Key : pictures (files)
  * Value : Capture d'écran_20221111_085342.png
@@ -130,8 +130,8 @@ router.post('/activity/:id', authenticate, fileUpload({
 * @apiParam (picture) id Id of activity
 * @apiExample Get picture for activity 6371f92c3e3b5d0a631b4097
 * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
-* GET 127.0.0.1:3000/pictures/activity/6371f92c3e3b5d0a631b4097
-* @apiSuccessExample {html} Create a user :
+* GET https://sport-2-meet.onrender.com/pictures/activity/6371f92c3e3b5d0a631b4097
+* @apiSuccessExample {html} Get picture for activity 6371f92c3e3b5d0a631b4097:
 * Status : 200 OK
 * [
     {
@@ -172,6 +172,7 @@ router.post('/activity/:id', authenticate, fileUpload({
     },
 ]
 * @apiErrorExample {html} False id of activity :
+* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 */
 /* GET picture by activity. */
 router.get('/activity/:id', function (req, res, next) {
@@ -196,7 +197,7 @@ router.get('/activity/:id', function (req, res, next) {
  * @apiParam (picture) id Id of user
  * @apiExample Get picture for user 6371f1f63e3b5d0a631b4080
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
- * GET 127.0.0.1:3000/pictures/user/6371f1f63e3b5d0a631b4080
+ * GET https://sport-2-meet.onrender.com/pictures/user/6371f1f63e3b5d0a631b4080
  * @apiSuccessExample {html} Get picture for user 6371f1f63e3b5d0a631b4080:
  *Status : 200 OK
  *[
@@ -262,6 +263,7 @@ router.get('/activity/:id', function (req, res, next) {
  *    },
  *]
  * @apiErrorExample {html} False user's id :
+ * XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
  */
 /* GET picture by user. */
 router.get('/user/:id', function (req, res, next) {
@@ -286,11 +288,9 @@ router.get('/user/:id', function (req, res, next) {
  * @apiParam (picture) id Id of picture
  * @apiExample Get picture 
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
- * PATCH 127.0.0.1:3000/pictures/63724939654d44c5b82c1d17
+ * PATCH https://sport-2-meet.onrender.com/pictures/63724939654d44c5b82c1d17
  * @apiSuccessExample {html} Get picture 63724939654d44c5b82c1d17:
- *
- * @apiErrorExample {html} False id of picture :
- *
+ * XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
  * @apiErrorExample {html} User is not the creator of the picture :
  * Status : 403 Forbidden
  * Vous n'avez pas les droits pour modifier cette photo
@@ -352,15 +352,16 @@ router.patch('/:id', authenticate, fileUpload({
 /**
  * @api {delete} /pictures/:id Delete picture by id
  * @apiGroup picture
- * @apiName DeletePictureBy)Id
+ * @apiName DeletePictureById
  * @apiParam (picture) id Id of picture
  * @apiExample Get picture 
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
- * DELETE 127.0.0.1:3000/pictures/63724939654d44c5b82c1d17
+ * DELETE https://sport-2-meet.onrender.com/pictures/63724939654d44c5b82c1d17
  * @apiSuccessExample {html} Delete picture 63724939654d44c5b82c1d17:
- *
+ * Status : 200 OK
+ * Picture deleted
  * @apiErrorExample {html} False id of picture :
- *
+ * Cette photo n'existe pas
  */
 /* DELETE picture by id. */
 router.delete('/:id', authenticate, function (req, res, next) {

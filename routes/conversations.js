@@ -6,6 +6,26 @@ import {
 
 const router = express.Router();
 
+/**
+ * @api {get} /conversations Get all conversations
+ * @apiGroup conversations
+ * @apiName GetAllConversations
+ * @apiExample Get conversations :
+ * GET https://sport-2-meet.onrender.com/conversations
+ * @apiSuccessExample {json} Get conversation :
+ * Status : 200 OK
+ * [
+    {
+        "_id": "63777bf8ec157793f6cb0a12",
+        "name": "Conversation de l'activité 63777bf8ec157793f6cb0a0f",
+        "users": [
+            "6377514f6c436fedc645d019"
+        ],
+        "activity": "63777bf8ec157793f6cb0a0f",
+        "__v": 0
+    }
+]
+ */
 /* GET conversations listing. */
 router.get('/', authenticate, function (req, res, next) {
     Conversation.find().sort('content').exec(function (err, conversations) {
@@ -16,6 +36,24 @@ router.get('/', authenticate, function (req, res, next) {
     });
 });
 
+/**
+ * @api {post} /comments/activity=:id Post new conversation
+ * @apiGroup conversations
+ * @apiName CreateConversations
+ * @apiBody {String} name
+ * @apiBody {Array} users' id
+ * @apiExample Post conversation for activity 63777bf8ec157793f6cb0a0f :
+ * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+ * GET https://sport-2-meet.onrender.com/conversations/activity=63777bf8ec157793f6cb0a0f
+ * {
+ * "name" : "conversation",
+ * "users" : ["637251e3abb31189cb4cfcc1", "63725364abb31189cb4cfcc4"]
+ * }
+ * @apiSuccessExample {json} Get conversations for activity 63777bf8ec157793f6cb0a0f :
+ * 
+ * @apiErrorExample {html} False id of activity :
+ * 
+ */
 /* POST new conversation */
 router.post('/activity=:id', authenticate, function (req, res, next) {
     // Create a new document from the JSON in the request body
@@ -34,6 +72,16 @@ router.post('/activity=:id', authenticate, function (req, res, next) {
     });
 });
 
+/**
+ * @api {delete} /conversations/id/:id Delete conversation by id
+ * @apiGroup conversations
+ * @apiName GetConversationById
+ * @apiExample Get conversation :
+ * GET https://sport-2-meet.onrender.com/conversations/id/57895466
+ * @apiSuccessExample {json} Get conversation 547896523415 :
+ * 
+ * @apiErrorExample {html} False id of conversation
+ */
 /* DELETE conversation by id */
 router.delete('/id/:id', authenticate, function (req, res) {
     // Only admins can delete conversations

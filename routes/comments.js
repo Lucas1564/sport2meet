@@ -11,6 +11,15 @@ import {
 
 const router = express.Router();
 
+/**
+ * @api {get} /comments Get all comment
+ * @apiGroup comments
+ * @apiName GetAllComments
+ * @apiExample Get comments :
+ * GET https://sport-2-meet.onrender.com/comments
+ * @apiSuccessExample {json} Get comments :
+ * 
+ */
 /* GET comments listing. */
 router.get('/', authenticate, function (req, res, next) {
   const page = parseInt(req.query.page) || 1;
@@ -26,9 +35,21 @@ router.get('/', authenticate, function (req, res, next) {
   });
 });
 
-
+/**
+ * @api {post} /comments/conversation=:id Create a comment
+ * @apiGroup comments
+ * @apiName GetCommentsById
+ * @apiParam (comments) id If of XXXXX
+ * @apiBody {String} content
+ * @apiExample Get comment 6146554866 :
+ * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+ * GET https://sport-2-meet.onrender.com/comments/conversations=6146554866
+ * @apiSuccessExample {json} Get comment 6146554866:
+ * 
+ * @apiErrorExample {html} False conversation id : 
+ */
 /* POST new comment */
-router.post('/conversation=:id', authenticate, function (req, res, next) {
+router.post('comments/conversation=:id', authenticate, function (req, res, next) {
   Conversation.findById(req.params.id, function (err, conversationById) {
     if (err) {
       return next(err);
@@ -71,7 +92,18 @@ router.post('/conversation=:id', authenticate, function (req, res, next) {
   });
 });
 
-
+/**
+ * @api {delete} /comments/conversation=:id Delete comment by id
+ * @apiGroup comments
+ * @apiName DeleteCommentsById
+ * @apiParam (comments) id If of comment
+ * @apiExample Delete comment 6146554866 :
+ * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+ * DELETE https://sport-2-meet.onrender.com/comments/id/6146554866
+ * @apiSuccessExample {json} Get comment 6146554866:
+ * 
+ * @apiErrorExample {html} False id of comment :
+ */
 /* DELETE comment by id */
 router.delete('/id/:id', authenticate, function (req, res) {
   Comment.findByid(req.params.id).exec(function (err, commentById) {
@@ -121,6 +153,19 @@ router.delete('/id/:id', authenticate, function (req, res) {
   });
 });
 
+/**
+ * @api {patch} /comments/id/:id Patch comment by id
+ * @apiGroup comments
+ * @apiName PatchCommentsById
+ * @apiParam (comments) id If of comment
+ * @apiBody {String} content
+ * @apiExample Patch comment 6146554866 :
+ * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+ * PATCH https://sport-2-meet.onrender.com/comments/id/6146554866
+ * @apiSuccessExample {json} Patch comment 6146554866:
+ * 
+ * @apiErrorExample {html} False id of comment :
+ */
 /* PATCH comment */
 router.patch('/id/:id', authenticate, function (req, res) {
   Comment.findByid(req.params.id).exec(function (err, commentById) {

@@ -21,7 +21,7 @@ const __dirname = fs.realpathSync('.');
  * @apiGroup activities
  * @apiName GetActivities
  * @apiExample Get all activities :
- * GET 127.0.0.1:3000/activities
+ * GET https://sport-2-meet.onrender.com/activities
  * @apiSuccessExample {json} Get all activities sucess:
  *[
  *    {
@@ -160,7 +160,7 @@ router.get('/', function (req, res, next) {
  * @apiName GetActivityById
  * @apiParam (activities) id Id of Activity
  * @apiExample Get activity 6371f8ce3e3b5d0a631b4092 :
- * GET 127.0.0.1:3000/activities/6371f8ce3e3b5d0a631b4092
+ * GET https://sport-2-meet.onrender.com/activities/6371f8ce3e3b5d0a631b4092
  * @apiSuccessExample {json} Get activity 6371f8ce3e3b5d0a631b4092 success:
  *{
  *    "location": {
@@ -196,6 +196,18 @@ router.get('/id/:id', function (req, res, next) {
     });
 });
 
+/**
+ * @api {get} /activities/sports Get all sports of created activities
+ * @apiGroup activities
+ * @apiName GetAllSportsOfCreatedActivities
+ * @apiExample Get all sports :
+ * GET https://sport-2-meet.onrender.com/activities/sports
+ * @apiSuccessExample {json} Get all sports of created activities :
+ * Status : 200 OK
+ * [
+ *   "Tennis"
+ * ]
+ */
 /* GET Sport */
 router.get('/sports', function (req, res, next) {
     Activity.find().distinct('sport').exec(function (err, sport) {
@@ -207,12 +219,12 @@ router.get('/sports', function (req, res, next) {
 });
 
 /**
- * @api {get} /activities/id/:id Modifiy activity by id
+ * @api {patch} /activities/id/:id Modifiy activity by id
  * @apiGroup activities
  * @apiName ModifyActivity
  * @apiParam (activities) id Id of activity
  * @apiExample Modify activity 6372013a3e3b5d0a631b40af :
- * PATCH 127.0.0.1:3000/activities/id/6372013a3e3b5d0a631b40af
+ * PATCH https://sport-2-meet.onrender.com/activities/id/6372013a3e3b5d0a631b40af
  *{
  * "description" : "Test modification"
  *}
@@ -252,7 +264,7 @@ router.patch('/id/:id', authenticate, function (req, res, next) {
  * @apiName DeleteActivity
  * @apiParam (activities) id Id of activity
  * @apiExample Delete activity 6372013a3e3b5d0a631b40af :
- * DELETE 127.0.0.1:3000/activities/id/6372013a3e3b5d0a631b40af
+ * DELETE https://sport-2-meet.onrender.com/activities/id/6372013a3e3b5d0a631b40af
  * @apiSuccessExample {html} Delete activity 6372013a3e3b5d0a631b40af sucess:
  * Status : 200 OK
  * Activité supprimée avec succès
@@ -287,7 +299,7 @@ router.delete('/id/:id', authenticate, function (req, res, next) {
  * @apiName CreateActivity
  * @apiExample Create an activity :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
- * POST 127.0.0.1:3000/activities
+ * POST https://sport-2-meet.onrender.com/activities
  *{
  * "description" : "test activité",
  * "sport" : "Course",

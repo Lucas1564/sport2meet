@@ -12,7 +12,7 @@ const router = express.Router();
  * @apiName GetUsers
  * @apiExample Get all users :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
- * GET 127.0.0.1:3000/users
+ * GET https://sport-2-meet.onrender.com/users
  * @apiSuccessExample {json} Get all user Success:
  * Status : 200 OK
  *[
@@ -46,7 +46,7 @@ router.get('/', function (req, res, next) {
  * @apiParam (user) id User's id
  * @apiExample Get user 6371f1f63e3b5d0a631b4080
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
- * GET 127.0.0.1:3000/users/id/6371f1f63e3b5d0a631b4080
+ * GET https://sport-2-meet.onrender.com/users/id/6371f1f63e3b5d0a631b4080
  * @apiSuccessExample {json} Get user by id Success:
  *{
  *    "email": "alexia.leger@heig-vd.ch",
@@ -82,8 +82,9 @@ router.get('/id/:id', function (req, res, next) {
  * @apiBody {String{3..20}} firstname 
  * @apiBody {String{3..20}} lastname 
  * @apiBody {String{8..20}} password
+ * @apiBody {String="user","admin"} type
  * @apiExample Create a user
- * POST 127.0.0.1:3000/users
+ * POST https://sport-2-meet.onrender.com/users
  * {
  * "email" : "alexia.leger@heig-vd.ch",
  * "firstname" : "Alexia",
@@ -105,6 +106,9 @@ router.get('/id/:id', function (req, res, next) {
  * @apiErrorExample {html} Lenght of password :
  * Status : 500 Internal Server Error 
  * Password is too short (8 characters minimum)
+ * @apiErrorExample {html} Duplicate users :
+ * Status : 500 Internal Server Error
+ * E11000 duplicate key error collection: test.users index: email_1 dup key: { email: "alexia.leger@heig-vd.ch" }
  */
 /* POST new user */
 router.post('/', function (req, res, next) {
@@ -127,7 +131,7 @@ router.post('/', function (req, res, next) {
  * @apiParam (user) id User's id
  * @apiExample Delete user 6371f5b33e3b5d0a631b4088 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
- * DELETE 127.0.0.1:3000/users/id/6371f5b33e3b5d0a631b4088
+ * DELETE https://sport-2-meet.onrender.com/users/id/6371f5b33e3b5d0a631b4088
  * @apiSuccessExample {html} Delete user Success:
  * User supprimé
  * @apiErrorExample {html} Delete a user with false id :
@@ -155,7 +159,28 @@ router.delete('/id/:id', authenticate, function (req, res) {
   }
 });
 
-
+/**
+ * @api {patch} /users/id/:id Modify a user
+ * @apiGroup user
+ * @apiName ModifyUser
+ * @apiParam (user) id User's id
+ * @apiBody {String} email 
+ * @apiBody {String{3..20}} firstname 
+ * @apiBody {String{3..20}} lastname 
+ * @apiBody {String{8..20}} password
+ * @apiBody {String="user","admin"} type
+ * @apiExample Modify user 6377514f6c436fedc645d019 :
+ * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+ * PATCH https://sport-2-meet.onrender.com/users/id/6377514f6c436fedc645d019
+ * {
+ *  "firstname" : "test modify"
+ * }
+ * @apiSuccessExample {html} Patch user Success:
+ * User modifié
+ * @apiErrorExample {html} Modify a user with false id :
+ * Status : 401 Unauthorized
+ * Vous n'avez pas les droits pour modifier cet utilisateur
+ */
 /* PATCH user */
 router.patch('/id/:id', authenticate, function (req, res, next) {
   // patch only if req.user._id == req.params.id

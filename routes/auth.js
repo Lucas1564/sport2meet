@@ -7,11 +7,11 @@ import * as config from "../config.js";
 const router = express.Router();
 
 /**
- * @api {post} /login Login
+ * @api {post} /auth/login Login
  * @apiGroup login
  * @apiName UserLogin
  * @apiExample Login :
- * POST 127.0.0.1:3000/auth/login
+ * POST https://sport-2-meet.onrender.com/auth/login
  *{
  * "email" : "alexia.leger@heig-vd.ch",
  * "password" : "alexialeger"

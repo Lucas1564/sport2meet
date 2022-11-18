@@ -12,6 +12,47 @@ import {
 
 const router = express.Router();
 
+/**
+ * @api {get} /userActivity/user Get activity by user
+ * @apiGroup userActivity
+ * @apiName GetActivityByUser
+ * @apiExample Get activities for user 6377514f6c436fedc645d019 :
+ * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+ * GET https://sport-2-meet.onrender.com/userActivity/user
+ * @apiSuccessExample {json} Get activity for user 6377514f6c436fedc645d019:
+ * Status : 200 OK
+ * [
+    {
+        "_id": "63777bf8ec157793f6cb0a11",
+        "activity": {
+            "location": {
+                "type": "Point",
+                "coordinates": [
+                    46.779117,
+                    6.64187
+                ]
+            },
+            "_id": "63777bf8ec157793f6cb0a0f",
+            "description": "test",
+            "sport": "Tennis",
+            "address": "Avenue des sports 4",
+            "npa": 1400,
+            "locality": "Yverdon",
+            "players": 5,
+            "datetime": "2022-04-23T18:25:43.511Z",
+            "type": "Tournoi",
+            "creator": "6377514f6c436fedc645d019",
+            "__v": 0
+        },
+        "user": "6377514f6c436fedc645d019",
+        "inscription": "2022-11-18T14:35:04.690Z",
+        "__v": 0
+    }
+]
+ * @apiErrorExample {html} User not authenticate :
+ * Status : 401 Unauthorized
+ * Unauthorized
+ */
 /* GET activity by user. */
 router.get('/user', authenticate, function (req, res, next) {
     activity_user.find({
@@ -25,6 +66,20 @@ router.get('/user', authenticate, function (req, res, next) {
 
 });
 
+/**
+ * @api {get} /userActivity/user/aggregate Aggregate activities by user
+ * @apiGroup userActivity
+ * @apiName AggregateActivityByUser
+ * @apiExample Aggregate activities for user 6377514f6c436fedc645d019 :
+ * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
+ * GET https://sport-2-meet.onrender.com/userActivity/user
+ * @apiSuccessExample {json} Get activity for user 6377514f6c436fedc645d019:
+ * Status : 200 OK
+ * Vous avez participé à 1 activités
+ * @apiErrorExample {html} User not connected :
+ * Status : 401 Unauhtorized
+ * Unauthorized
+ */ 
 /* aggregate all activities by user */
 router.get('/user/aggregate', authenticate, function (req, res, next) {
     activity_user.aggregate([{
@@ -50,7 +105,7 @@ router.get('/user/aggregate', authenticate, function (req, res, next) {
  * @apiParam (userActivity) id Id of activity
  * @apiExample Join activity 6371f8ce3e3b5d0a631b4092 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
- * POST 127.0.0.1:3000/userActivity/join/6371f8ce3e3b5d0a631b4092
+ * POST https://sport-2-meet.onrender.com/userActivity/join/6371f8ce3e3b5d0a631b4092
  * @apiSuccessExample {json} Join activity 6371f8ce3e3b5d0a631b4092 success:
  *{
  *    "activity": "6371f8ce3e3b5d0a631b4092",
@@ -59,7 +114,7 @@ router.get('/user/aggregate', authenticate, function (req, res, next) {
  *    "_id": "6371fedc3e3b5d0a631b40a5",
  *    "__v": 0
  *}
- * @apiErrorExample {} False id of activity :
+ * @apiErrorExample {html} False id of activity :
  * Status : 404 Not Found
  * Activité non trouvée
  */
@@ -140,14 +195,14 @@ router.post('/join/:id', authenticate, function (req, res, next) {
 });
 
 /**
- * @api {post} /userActivity/join/:id User leaves an activity
+ * @api {delete} /userActivity/join/:id User leaves an activity
  * @apiGroup userActivity
  * @apiName LeaveActivity
  * @apiParam (userActivity) id Id of activity
  * @apiExample Leave activity 6371f8ce3e3b5d0a631b4092 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
- * DELETE 127.0.0.1:3000/userActivity/leave/6371f8ce3e3b5d0a631b4092
- * @apiSuccessExample {html} Leave activity 6371f8ce3e3b5d0a631b4092 sucess :
+ * DELETE https://sport-2-meet.onrender.com/userActivity/leave/6371f8ce3e3b5d0a631b4092
+ * @apiSuccessExample {html} Leave activity 6371f8ce3e3b5d0a631b4092 success :
  * Vous avez quitté l'activité
  * @apiErrorExample {html} False id of activity :
  * Status : 404 Not Found
