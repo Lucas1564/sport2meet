@@ -48,3 +48,11 @@ Ce repo Github ne comprend que l’API de l’application Sport2Meet.
 
 <b>Quels endpoints allons-nous utiliser ?</b><br>
 * Tous les endpoints sont listés dans la [documentation](https://sport-2-meet.onrender.com/) du projet.
+
+## Serveur websocket
+### Connection au serveur depuis Postman
+Pour se connecter au serveur depuis postman, il faut ouvrir une page "WebSocket Request".
+Ensuite, l'adresse du serveur est ws://sport-2-meet.onrender.com/ et ajouter le token dans le header :
+Key : Authorization
+Value : Bearer gbrthhbrtGEHFeruierojbgeéprg
+Ne pas oublier de se connecter avec un user dans une autre page afin de pouvoir mettre le token lors de la connection au serveur websocket.
