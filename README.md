@@ -4,6 +4,7 @@
 * [Description du projet](#description-du-projet)
 * [Questions générales](#questions-générales)
 * [Questions spécifiques](#questions-spécifiques)
+* [Serveur WebSocket](#serveur-websocket)
 
 
 
