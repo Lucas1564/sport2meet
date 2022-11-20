@@ -116,7 +116,7 @@ router.delete('/id/:id', authenticate, function (req, res) {
       return next(err);
     }
     // Check if the user is the creator of the comment or an admin
-    if (commentById.user == req.user._id || req.user.role == "admin") {
+    if (commentById.user.toString() == req.user._id.toString() || req.user.role == "admin") {
       Comment.findByIdAndDelete(req.params.id, function (err, commentById) {
         if (err) {
           return next(err);
@@ -179,7 +179,7 @@ router.patch('/id/:id', authenticate, function (req, res) {
       return next(err);
     }
     // Check if the user is the creator of the comment or an admin
-    if (commentById.user == req.user._id || req.user.role == "admin") {
+    if (commentById.user.toString() == req.user._id.toString() || req.user.role == "admin") {
       Comment.findByIdAndUpdate(req.params.id, req.body, function (err, commentById) {
         if (err) {
           return next(err);
