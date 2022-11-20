@@ -17,6 +17,7 @@ const router = express.Router();
  * @apiName GetAllComments
  * @apiExample Get comments :
  * GET https://sport-2-meet.onrender.com/comments
+ * @apiSuccess (comments) {json} Comments XXX
  * @apiSuccessExample {json} Get comments :
  * 
  */
@@ -44,6 +45,7 @@ router.get('/', authenticate, function (req, res, next) {
  * @apiExample Get comment 6146554866 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * GET https://sport-2-meet.onrender.com/comments/conversations=6146554866
+ * @apiSuccess (comments) {json} Comment XXX
  * @apiSuccessExample {json} Get comment 6146554866:
  * 
  * @apiErrorExample {html} False conversation id : 
@@ -100,7 +102,8 @@ router.post('comments/conversation=:id', authenticate, function (req, res, next)
  * @apiExample Delete comment 6146554866 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * DELETE https://sport-2-meet.onrender.com/comments/id/6146554866
- * @apiSuccessExample {json} Get comment 6146554866:
+ * @apiSuccess (comments) {} XXX
+ * @apiSuccessExample {XXX} Delete comment 6146554866:
  * 
  * @apiErrorExample {html} False id of comment :
  */
@@ -162,6 +165,7 @@ router.delete('/id/:id', authenticate, function (req, res) {
  * @apiExample Patch comment 6146554866 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * PATCH https://sport-2-meet.onrender.com/comments/id/6146554866
+ * 
  * @apiSuccessExample {json} Patch comment 6146554866:
  * 
  * @apiErrorExample {html} False id of comment :

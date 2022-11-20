@@ -19,7 +19,8 @@ const router = express.Router();
  * @apiExample Get activities for user 6377514f6c436fedc645d019 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * GET https://sport-2-meet.onrender.com/userActivity/user
- * @apiSuccessExample {json} Get activity for user 6377514f6c436fedc645d019:
+ * @apiSuccess (userActivity) {json} Activities Tab of activities of requested user
+ * @apiSuccessExample {json} Success response:
  * Status : 200 OK
  * [
     {
@@ -49,6 +50,7 @@ const router = express.Router();
         "__v": 0
     }
 ]
+ * @apiError (userActivity) {html} Message Error message
  * @apiErrorExample {html} User not authenticate :
  * Status : 401 Unauthorized
  * Unauthorized
@@ -73,9 +75,11 @@ router.get('/user', authenticate, function (req, res, next) {
  * @apiExample Aggregate activities for user 6377514f6c436fedc645d019 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * GET https://sport-2-meet.onrender.com/userActivity/user
- * @apiSuccessExample {json} Get activity for user 6377514f6c436fedc645d019:
+ * @apiSuccess (userActivity) {html} Message Success message
+ * @apiSuccessExample {html} Success response:
  * Status : 200 OK
  * Vous avez participé à 1 activités
+ * @apiError (userActivity) {html} Message Error message
  * @apiErrorExample {html} User not connected :
  * Status : 401 Unauhtorized
  * Unauthorized
@@ -106,7 +110,8 @@ router.get('/user/aggregate', authenticate, function (req, res, next) {
  * @apiExample Join activity 6371f8ce3e3b5d0a631b4092 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * POST https://sport-2-meet.onrender.com/userActivity/join/6371f8ce3e3b5d0a631b4092
- * @apiSuccessExample {json} Join activity 6371f8ce3e3b5d0a631b4092 success:
+ * @apiSuccess (userActivity) {json} Inscription Registration summary
+ * @apiSuccessExample {json} Success response:
  *{
  *    "activity": "6371f8ce3e3b5d0a631b4092",
  *    "user": "6371f1f63e3b5d0a631b4080",
@@ -114,6 +119,7 @@ router.get('/user/aggregate', authenticate, function (req, res, next) {
  *    "_id": "6371fedc3e3b5d0a631b40a5",
  *    "__v": 0
  *}
+ * @apiError (userActivity) {html} Message Error message
  * @apiErrorExample {html} False id of activity :
  * Status : 404 Not Found
  * Activité non trouvée
@@ -202,8 +208,10 @@ router.post('/join/:id', authenticate, function (req, res, next) {
  * @apiExample Leave activity 6371f8ce3e3b5d0a631b4092 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * DELETE https://sport-2-meet.onrender.com/userActivity/leave/6371f8ce3e3b5d0a631b4092
- * @apiSuccessExample {html} Leave activity 6371f8ce3e3b5d0a631b4092 success :
+ * @apiSuccess (userActivity) {html} Message Success message
+ * @apiSuccessExample {html} Success response:
  * Vous avez quitté l'activité
+ * @apiError (userActivity) {html} Message Error message
  * @apiErrorExample {html} False id of activity :
  * Status : 404 Not Found
  * Vous n'êtes pas inscrit à cette activité

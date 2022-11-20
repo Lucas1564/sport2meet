@@ -16,11 +16,13 @@ const router = express.Router();
  * "email" : "alexia.leger@heig-vd.ch",
  * "password" : "alexialeger"
  *}
- * @apiSuccessExample {json} Login success :
+ * @apiSuccess (auth) {json} Token Token of connected person
+ * @apiSuccessExample {json} Success response:
  * Status : 200 OK
  *{
  *    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzcxZjFmNjNlM2I1ZDBhNjMxYjQwODAiLCJpYXQiOjE2Njg0MTIyMTQsImV4cCI6MTY2OTAxNzAxNH0.c2_hZ5heHFs1TvD1dgYQcaCN-mxRoWo48R9_kyskQhM"
  *}
+ * @apiError (auth) {html} Message Error Message
  * @apiErrorExample {html} False password :
  * Status : 401 Unauthorized
  * Bad login
