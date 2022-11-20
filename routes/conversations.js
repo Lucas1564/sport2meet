@@ -49,8 +49,6 @@ router.post('/activity=:id', authenticate, function (req, res, next) {
     newConversation.activity = req.params.id;
     var users = [];
     users.push(req.user._id);
-    console.log(users);
-    console.log("test");
     newConversation.users = users;
     newConversation.name = "Conversation de l'activité " + req.params.id;
     // Save that document
