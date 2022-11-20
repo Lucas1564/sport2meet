@@ -115,45 +115,49 @@ router.delete('/id/:id', authenticate, function (req, res) {
     if (err) {
       return next(err);
     }
-    // Check if the user is the creator of the comment or an admin
-    if (commentById.user.toString() == req.user._id.toString() || req.user.role == "admin") {
-      Comment.findByIdAndDelete(req.params.id, function (err, commentById) {
-        if (err) {
-          return next(err);
-        }
-        Conversation.findById(commentById.conversation, function (err, conversationById) {
+    if (commentById) {
+      // Check if the user is the creator of the comment or an admin
+      if (commentById.creator.toString() == req.user._id.toString() || req.user.role == "admin") {
+        Comment.findByIdAndDelete(req.params.id, function (err, commentById) {
           if (err) {
             return next(err);
           }
-          // For each user in the conversation, send a message to the websocket
-          conversationById.users.forEach(user => {
-            if (user.toString() != req.user._id.toString()) {
-              // Send a message to specific user with CODE DELETE_MESSAGE
-              sendMessageToSpecificUser({
-                "data": {
-                  "message": {
-                    "id": commentById._id,
-                    "content": commentById.content,
-                  },
-                  "conversation": {
-                    "id": conversationById._id,
-                    "name": conversationById.name,
-                  },
-                  "sender": {
-                    "id": req.user._id,
-                    "username": req.user.firstname + " " + req.user.lastname,
-                  },
-                  "date": commentById.date
-                },
-              }, user, "DELETE_MESSAGE");
+          Conversation.findById(commentById.conversation, function (err, conversationById) {
+            if (err) {
+              return next(err);
             }
+            // For each user in the conversation, send a message to the websocket
+            conversationById.users.forEach(user => {
+              if (user.toString() != req.user._id.toString()) {
+                // Send a message to specific user with CODE DELETE_MESSAGE
+                sendMessageToSpecificUser({
+                  "data": {
+                    "message": {
+                      "id": commentById._id,
+                      "content": commentById.content,
+                    },
+                    "conversation": {
+                      "id": conversationById._id,
+                      "name": conversationById.name,
+                    },
+                    "sender": {
+                      "id": req.user._id,
+                      "username": req.user.firstname + " " + req.user.lastname,
+                    },
+                    "date": commentById.date
+                  },
+                }, user, "DELETE_MESSAGE");
+              }
+            });
           });
+          // Supprimer avec succès
+          res.send("Commentaire supprimé");
         });
-        // Supprimer avec succès
-        res.send("Commentaire supprimé");
-      });
+      } else {
+        res.status(401).send("Vous n'avez pas les droits pour supprimer ce commentaire");
+      }
     } else {
-      res.status(401).send("Vous n'avez pas les droits pour supprimer ce commentaire");
+      res.status(404).send("Commentaire non trouvé");
     }
   });
 });
@@ -178,45 +182,49 @@ router.patch('/id/:id', authenticate, function (req, res) {
     if (err) {
       return next(err);
     }
-    // Check if the user is the creator of the comment or an admin
-    if (commentById.user.toString() == req.user._id.toString() || req.user.role == "admin") {
-      Comment.findByIdAndUpdate(req.params.id, req.body, function (err, commentById) {
-        if (err) {
-          return next(err);
-        }
-        Conversation.findById(commentById.conversation, function (err, conversationById) {
+    if (commentById) {
+      // Check if the user is the creator of the comment or an admin
+      if (commentById.creator.toString() == req.user._id.toString() || req.user.role == "admin") {
+        Comment.findByIdAndUpdate(req.params.id, req.body, function (err, commentById) {
           if (err) {
             return next(err);
           }
-          // For each user in the conversation, send a message to the websocket
-          conversationById.users.forEach(user => {
-            if (user.toString() != req.user._id.toString()) {
-              // Send a message to specific user with CODE UPDATE_MESSAGE
-              sendMessageToSpecificUser({
-                "data": {
-                  "message": {
-                    "id": commentById._id,
-                    "content": commentById.content,
-                  },
-                  "conversation": {
-                    "id": conversationById._id,
-                    "name": conversationById.name,
-                  },
-                  "sender": {
-                    "id": req.user._id,
-                    "username": req.user.firstname + " " + req.user.lastname,
-                  },
-                  "date": commentById.date
-                },
-              }, user, "UPDATE_MESSAGE");
+          Conversation.findById(commentById.conversation, function (err, conversationById) {
+            if (err) {
+              return next(err);
             }
+            // For each user in the conversation, send a message to the websocket
+            conversationById.users.forEach(user => {
+              if (user.toString() != req.user._id.toString()) {
+                // Send a message to specific user with CODE UPDATE_MESSAGE
+                sendMessageToSpecificUser({
+                  "data": {
+                    "message": {
+                      "id": commentById._id,
+                      "content": commentById.content,
+                    },
+                    "conversation": {
+                      "id": conversationById._id,
+                      "name": conversationById.name,
+                    },
+                    "sender": {
+                      "id": req.user._id,
+                      "username": req.user.firstname + " " + req.user.lastname,
+                    },
+                    "date": commentById.date
+                  },
+                }, user, "UPDATE_MESSAGE");
+              }
+            });
           });
+          // Update avec succès
+          res.send("Commentaire modifié");
         });
-        // Update avec succès
-        res.send("Commentaire modifié");
-      });
+      } else {
+        res.status(401).send("Vous n'avez pas les droits pour modifier ce commentaire");
+      }
     } else {
-      res.status(401).send("Vous n'avez pas les droits pour modifier ce commentaire");
+      res.status(401).send("Commentaire introuvable");
     }
   });
 });
