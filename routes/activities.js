@@ -22,7 +22,8 @@ const __dirname = fs.realpathSync('.');
  * @apiName GetActivities
  * @apiExample Get all activities :
  * GET https://sport-2-meet.onrender.com/activities
- * @apiSuccessExample {json} Get all activities sucess:
+ * @apiSuccess (activities) {json} Activities
+ * @apiSuccessExample {json} Sucess response:
  *[
  *    {
  *        "location": {
@@ -161,7 +162,8 @@ router.get('/', function (req, res, next) {
  * @apiParam (activities) id Id of Activity
  * @apiExample Get activity 6371f8ce3e3b5d0a631b4092 :
  * GET https://sport-2-meet.onrender.com/activities/6371f8ce3e3b5d0a631b4092
- * @apiSuccessExample {json} Get activity 6371f8ce3e3b5d0a631b4092 success:
+ * @apiSuccess (activities) {json} Activities Requested activity
+ * @apiSuccessExample {json} Success response:
  *{
  *    "location": {
  *        "type": "Point",
@@ -182,6 +184,7 @@ router.get('/', function (req, res, next) {
  *    "creator": "6371f1f63e3b5d0a631b4080",
  *    "__v": 0
  *}
+ * @apiError (activities) {html} Message Error message
  * @apiErrorExample {html} False id of activity :
  * Status : 404 Not Found
  * Not Found
@@ -202,7 +205,8 @@ router.get('/id/:id', function (req, res, next) {
  * @apiName GetAllSportsOfCreatedActivities
  * @apiExample Get all sports :
  * GET https://sport-2-meet.onrender.com/activities/sports
- * @apiSuccessExample {json} Get all sports of created activities :
+ * @apiSuccess (activities) {array} Sport Tab of sport of created activities
+ * @apiSuccessExample {array} Success response :
  * Status : 200 OK
  * [
  *   "Tennis"
@@ -228,9 +232,11 @@ router.get('/sports', function (req, res, next) {
  *{
  * "description" : "Test modification"
  *}
- * @apiSuccessExample {html} Modify activity 6372013a3e3b5d0a631b40af sucess:
+ * @apiSuccess (activities) {html} Message Success message
+ * @apiSuccessExample {html} Success response :
  * Status : 200 OK
  * Activité modifiée avec succès !
+ * @apiError (activities) {html} Message Error message
  * @apiErrorExample {html} False id of activity :
  * Status : 500 Internal Server Error
  * Cast to ObjectId failed for value "6372013a3e3b5d0a631b40az" (type string) at path "_id" for model "Activity"
@@ -265,9 +271,11 @@ router.patch('/id/:id', authenticate, function (req, res, next) {
  * @apiParam (activities) id Id of activity
  * @apiExample Delete activity 6372013a3e3b5d0a631b40af :
  * DELETE https://sport-2-meet.onrender.com/activities/id/6372013a3e3b5d0a631b40af
- * @apiSuccessExample {html} Delete activity 6372013a3e3b5d0a631b40af sucess:
+ * @apiSuccess (activities) {html} Message Success message
+ * @apiSuccessExample {html} Success response:
  * Status : 200 OK
  * Activité supprimée avec succès
+ * @apiError (activities) {html} Message Error message
  * @apiErrorExample {html} False id of activity :
  * Status : 500 Internal Server Error
  * Cast to ObjectId failed for value "6372013a3e3b5d0a631b40az" (type string) at path "_id" for model "Activity"
@@ -318,7 +326,8 @@ router.delete('/id/:id', authenticate, function (req, res, next) {
  * @apiBody {Number} players
  * @apiBody {Datetime} datetime
  * @apiBody {String= "Evénement", "Tournoi", "Entraînement", "Autre"} type
- * @apiSuccessExample {json} Create an activity success:
+ * @apiSuccess (activities) {json} Activity Created activity
+ * @apiSuccessExample {json} Success response:
  *{
  *    "description": "test activité",
  *    "sport": "Course",
@@ -339,6 +348,7 @@ router.delete('/id/:id', authenticate, function (req, res, next) {
  *    "_id": "6371f92c3e3b5d0a631b4097",
  *    "__v": 0
  *}
+ * @apiError (activities) {html} Message Error message
  * @apiErrorExample {html} Missing required field type :
  * Status : 500 Internal Servor Error
  * Activity validation failed: type: Path `type` is required.

@@ -26,7 +26,8 @@ const __dirname = fs.realpathSync('.');
  * form-data :
  * Key : pictures (files)
  * Value : Capture d'écran_20221111_085342.png
- * @apiSuccessExample {html} Create a user :
+ * @apiSuccess (pictures) {html} Message Success message
+ * @apiSuccessExample {html} Success response :
  * Status : 200 OK
  * 1 picture uploaded !
  */
@@ -131,7 +132,8 @@ router.post('/activity/:id', authenticate, fileUpload({
 * @apiExample Get picture for activity 6371f92c3e3b5d0a631b4097
 * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
 * GET https://sport-2-meet.onrender.com/pictures/activity/6371f92c3e3b5d0a631b4097
-* @apiSuccessExample {html} Get picture for activity 6371f92c3e3b5d0a631b4097:
+* @apiSuccess (pictures) {json} Pictures Tab of picture of requested activity
+* @apiSuccessExample {json} Success response:
 * Status : 200 OK
 * [
     {
@@ -171,8 +173,10 @@ router.post('/activity/:id', authenticate, fileUpload({
         "__v": 0
     },
 ]
+* @apiError (pictures) {html} Message Error message
 * @apiErrorExample {html} False id of activity :
-* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+* Status : 404 Not Found
+* Activité non trouvée
 */
 /* GET picture by activity. */
 router.get('/activity/:id', function (req, res, next) {
@@ -204,10 +208,11 @@ router.get('/activity/:id', function (req, res, next) {
  * @apiGroup picture
  * @apiName GetPictureByUser
  * @apiParam (picture) id Id of user
- * @apiExample Get picture for user 6371f1f63e3b5d0a631b4080
+ * @apiExample Get pictures for user 6371f1f63e3b5d0a631b4080
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * GET https://sport-2-meet.onrender.com/pictures/user/6371f1f63e3b5d0a631b4080
- * @apiSuccessExample {html} Get picture for user 6371f1f63e3b5d0a631b4080:
+ * @apiSuccess (pictures) {json} Pictures Pcitures of requested user
+ * @apiSuccessExample {json} Success response:
  *Status : 200 OK
  *[
  *    {
@@ -271,8 +276,10 @@ router.get('/activity/:id', function (req, res, next) {
  *        "__v": 0
  *    },
  *]
+ * @apiError (pictures) {html} Message Error message
  * @apiErrorExample {html} False user's id :
- * XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+ * Status : 404 Not Found
+ * Utilisateur non trouvé
  */
 /* GET picture by user. */
 router.get('/user/:id', function (req, res, next) {
@@ -307,8 +314,10 @@ router.get('/user/:id', function (req, res, next) {
  * @apiExample Get picture 
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * PATCH https://sport-2-meet.onrender.com/pictures/63724939654d44c5b82c1d17
- * @apiSuccessExample {html} Get picture 63724939654d44c5b82c1d17:
+ * @apiSuccess (pictures) {json} Picture Requested picture
+ * @apiSuccessExample {html} Success response:
  * XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+ * @apiError (pictures) {html} Message Error message
  * @apiErrorExample {html} User is not the creator of the picture :
  * Status : 403 Forbidden
  * Vous n'avez pas les droits pour modifier cette photo
@@ -375,9 +384,11 @@ router.patch('/:id', authenticate, fileUpload({
  * @apiExample Get picture 
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * DELETE https://sport-2-meet.onrender.com/pictures/63724939654d44c5b82c1d17
- * @apiSuccessExample {html} Delete picture 63724939654d44c5b82c1d17:
+ * @apiSuccess (pictures) {html} Message Success message
+ * @apiSuccessExample {html} Success response:
  * Status : 200 OK
  * Picture deleted
+ * @apiError (pictures) {html} Message Error message
  * @apiErrorExample {html} False id of picture :
  * Cette photo n'existe pas
  */

@@ -13,7 +13,8 @@ const router = express.Router();
  * @apiExample Get all users :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * GET https://sport-2-meet.onrender.com/users
- * @apiSuccessExample {json} Get all user Success:
+ * @apiSuccess (users) {json} Users Tab of users
+ * @apiSuccessExample {json} Success response:
  * Status : 200 OK
  *[
  *    {
@@ -25,6 +26,7 @@ const router = express.Router();
  *        "_id": "6371f1f63e3b5d0a631b4080"
  *    }
  *]
+ * @apiError (users) {html} Message Error message
  * @apiErrorExample {html} User not logged in :
  * Status : 401 Unauthorized
  * Unauthorized
@@ -47,7 +49,8 @@ router.get('/', function (req, res, next) {
  * @apiExample Get user 6371f1f63e3b5d0a631b4080
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * GET https://sport-2-meet.onrender.com/users/id/6371f1f63e3b5d0a631b4080
- * @apiSuccessExample {json} Get user by id Success:
+ * @apiSuccess (users) {json} User Requested user
+ * @apiSuccessExample {json} Success response:
  *{
  *    "email": "alexia.leger@heig-vd.ch",
  *    "firstname": "Alexia",
@@ -56,6 +59,7 @@ router.get('/', function (req, res, next) {
  *    "registrationDate": "2022-11-14T07:44:54.998Z",
  *    "_id": "6371f1f63e3b5d0a631b4080"
  *}
+ * @apiError (users) {html} Message Error message
  * @apiErrorExample {html} False user's id :
  * Status : 404 Not Found
  * User not found
@@ -91,7 +95,8 @@ router.get('/id/:id', function (req, res, next) {
  * "lastname" : "Leger",
  * "password" : "alexialeger"
  *}
- * @apiSuccessExample {json} Create a user Success:
+ * @apiSuccess (users) {json} User Created user
+ * @apiSuccessExample {json} Success response:
  * {
  *    "email": "alexia.leger@heig-vd.ch",
  *    "firstname": "Alexia",
@@ -100,6 +105,7 @@ router.get('/id/:id', function (req, res, next) {
  *    "registrationDate": "2022-11-14T07:44:54.998Z",
  *    "_id": "6371f1f63e3b5d0a631b4080"
  *}
+ * @apiError (users) {html} Message Error message
  * @apiErrorExample {html} Missing required field :
  * Status : 500 Internal Server Error 
  * User validation failed: lastname: Path `lastname` is required.
@@ -132,8 +138,10 @@ router.post('/', function (req, res, next) {
  * @apiExample Delete user 6371f5b33e3b5d0a631b4088 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * DELETE https://sport-2-meet.onrender.com/users/id/6371f5b33e3b5d0a631b4088
- * @apiSuccessExample {html} Delete user Success:
+ * @apiSuccess (users) {html} Message Success message
+ * @apiSuccessExample {html} Success response:
  * User supprimé
+ * @apiError (users) {html} Message Error message
  * @apiErrorExample {html} Delete a user with false id :
  * Status : 401 Unauthorized
  * Unauthorized
@@ -175,8 +183,10 @@ router.delete('/id/:id', authenticate, function (req, res) {
  * {
  *  "firstname" : "test modify"
  * }
- * @apiSuccessExample {html} Patch user Success:
+ * @apiSuccess (users) {html} Message Success message
+ * @apiSuccessExample {html} Success response:
  * User modifié
+ * @apiError (users) {html} Message Error message
  * @apiErrorExample {html} Modify a user with false id :
  * Status : 401 Unauthorized
  * Vous n'avez pas les droits pour modifier cet utilisateur
