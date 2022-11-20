@@ -18,8 +18,8 @@ const router = express.Router();
  * @apiExample Get comments :
  * GET https://sport-2-meet.onrender.com/comments
  * @apiSuccess (comments) {json} Comments XXX
- * @apiSuccessExample {json} Get comments :
- * 
+ * apiSuccessExample {json} Get comments :
+ * XXXXX
  */
 /* GET comments listing. */
 router.get('/', authenticate, function (req, res, next) {
@@ -40,15 +40,16 @@ router.get('/', authenticate, function (req, res, next) {
  * @api {post} /comments/conversation=:id Create a comment
  * @apiGroup comments
  * @apiName GetCommentsById
- * @apiParam (comments) id If of XXXXX
+ * @apiParam (comments) id If of conversation
  * @apiBody {String} content
  * @apiExample Get comment 6146554866 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * GET https://sport-2-meet.onrender.com/comments/conversations=6146554866
  * @apiSuccess (comments) {json} Comment XXX
- * @apiSuccessExample {json} Get comment 6146554866:
- * 
- * @apiErrorExample {html} False conversation id : 
+ * apiSuccessExample {json} Get comment 6146554866:
+ * XXXXXx
+ * apiErrorExample {html} False conversation id : 
+ * XXX
  */
 /* POST new comment */
 router.post('comments/conversation=:id', authenticate, function (req, res, next) {
@@ -98,14 +99,15 @@ router.post('comments/conversation=:id', authenticate, function (req, res, next)
  * @api {delete} /comments/conversation=:id Delete comment by id
  * @apiGroup comments
  * @apiName DeleteCommentsById
- * @apiParam (comments) id If of comment
+ * @apiParam (comments) id If of conversation
  * @apiExample Delete comment 6146554866 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * DELETE https://sport-2-meet.onrender.com/comments/id/6146554866
- * @apiSuccess (comments) {} XXX
- * @apiSuccessExample {XXX} Delete comment 6146554866:
- * 
- * @apiErrorExample {html} False id of comment :
+ * apiSuccess (comments) {} XXX
+ * apiSuccessExample {XXX} Delete comment 6146554866:
+ * XXXX
+ * apiErrorExample {html} False id of comment :
+ * XXXX
  */
 /* DELETE comment by id */
 router.delete('/id/:id', authenticate, function (req, res) {
@@ -165,10 +167,10 @@ router.delete('/id/:id', authenticate, function (req, res) {
  * @apiExample Patch comment 6146554866 :
  * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
  * PATCH https://sport-2-meet.onrender.com/comments/id/6146554866
- * 
- * @apiSuccessExample {json} Patch comment 6146554866:
- * 
- * @apiErrorExample {html} False id of comment :
+ * apiSuccessExample {json} Patch comment 6146554866:
+ * xxxx
+ * apiErrorExample {html} False id of comment :
+ * xxx
  */
 /* PATCH comment */
 router.patch('/id/:id', authenticate, function (req, res) {

@@ -49,9 +49,9 @@ router.get('/', authenticate, function (req, res, next) {
  * "name" : "conversation",
  * "users" : ["637251e3abb31189cb4cfcc1", "63725364abb31189cb4cfcc4"]
  * }
- * @apiSuccessExample {json} Get conversations for activity 63777bf8ec157793f6cb0a0f :
+ * apiSuccessExample {json} Get conversations for activity 63777bf8ec157793f6cb0a0f :
  * 
- * @apiErrorExample {html} False id of activity :
+ * apiErrorExample {html} False id of activity :
  * 
  */
 /* POST new conversation */
@@ -81,9 +81,9 @@ router.post('/activity=:id', authenticate, function (req, res, next) {
  * @apiName GetConversationById
  * @apiExample Get conversation :
  * GET https://sport-2-meet.onrender.com/conversations/id/57895466
- * @apiSuccessExample {json} Get conversation 547896523415 :
+ * apiSuccessExample {json} Get conversation 547896523415 :
  * 
- * @apiErrorExample {html} False id of conversation
+ * apiErrorExample {html} False id of conversation
  */
 /* DELETE conversation by id */
 router.delete('/id/:id', authenticate, function (req, res) {
@@ -107,9 +107,9 @@ router.delete('/id/:id', authenticate, function (req, res) {
  * @apiName GetAUserToAConversation
  * @apiExample Add user XXX to conversation XXX:
  * GET https://sport-2-meet.onrender.com/conversations/addUser/conversation=57895466
- * @apiSuccessExample {json} Add user XXX to conversation 547896523415 :
+ * apiSuccessExample {json} Add user XXX to conversation 547896523415 :
  * 
- * @apiErrorExample {html} False id of conversation
+ * apiErrorExample {html} False id of conversation
  */
 /* ADD user to conversation */
 router.patch('/addUser/conversation=:convId', authenticate, function (req, res) {
@@ -146,9 +146,9 @@ router.patch('/addUser/conversation=:convId', authenticate, function (req, res) 
  * @apiName ModifyConversationById
  * @apiExample Modify conversation XXX :
  * GET https://sport-2-meet.onrender.com/conversations/id/57895466
- * @apiSuccessExample {json} Modify conversation 547896523415 :
+ * apiSuccessExample {json} Modify conversation 547896523415 :
  * 
- * @apiErrorExample {html} False id of conversation
+ * apiErrorExample {html} False id of conversation
  */
 /* PATCH conversation */
 router.patch('/id/:id', authenticate, function (req, res) {
