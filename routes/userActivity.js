@@ -201,7 +201,7 @@ router.post('/join/:id', authenticate, function (req, res, next) {
 });
 
 /**
- * @api {delete} /userActivity/join/:id User leaves an activity
+ * @api {delete} /userActivity/leave/:id User leaves an activity
  * @apiGroup userActivity
  * @apiName LeaveActivity
  * @apiParam (userActivity) id Id of activity

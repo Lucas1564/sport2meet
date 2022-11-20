@@ -40,19 +40,7 @@ router.get('/', authenticate, function (req, res, next) {
  * @api {post} /comments/activity=:id Post new conversation
  * @apiGroup conversations
  * @apiName CreateConversations
- * @apiBody {String} name
- * @apiBody {Array} users' id
- * @apiExample Post conversation for activity 63777bf8ec157793f6cb0a0f :
- * Authorization:Bearer sjkshrbgflkergERGHERIGAwk
- * GET https://sport-2-meet.onrender.com/conversations/activity=63777bf8ec157793f6cb0a0f
- * {
- * "name" : "conversation",
- * "users" : ["637251e3abb31189cb4cfcc1", "63725364abb31189cb4cfcc4"]
- * }
- * apiSuccessExample {json} Get conversations for activity 63777bf8ec157793f6cb0a0f :
- * 
- * apiErrorExample {html} False id of activity :
- * 
+ * @apiDescription Pour créer une conversation, il faut utiliser le serveur websocket. Voir le README.md. 
  */
 /* POST new conversation */
 router.post('/activity=:id', authenticate, function (req, res, next) {
@@ -79,11 +67,13 @@ router.post('/activity=:id', authenticate, function (req, res, next) {
  * @api {delete} /conversations/id/:id Delete conversation by id
  * @apiGroup conversations
  * @apiName GetConversationById
- * @apiExample Get conversation :
- * GET https://sport-2-meet.onrender.com/conversations/id/57895466
- * apiSuccessExample {json} Get conversation 547896523415 :
- * 
- * apiErrorExample {html} False id of conversation
+ * @apiParam (conversations) id Id of conversation
+ * @apiExample Delete conversation 63777bf8ec157793f6cb0a12
+ * Authorization Bearer iéebrgéjebruoe (admin)
+ * DELETE https://sport-2-meet.onrender.com/conversations/id/63777bf8ec157793f6cb0a12
+ * @apiSuccess (conversations) {html} Message Success message
+ * @apiSuccessExample {html} Success response :
+ * Conversation supprimée
  */
 /* DELETE conversation by id */
 router.delete('/id/:id', authenticate, function (req, res) {
@@ -105,11 +95,22 @@ router.delete('/id/:id', authenticate, function (req, res) {
  * @api {patch} /conversations/addUser/conversation=:convId Add a user to a conversation
  * @apiGroup conversations
  * @apiName GetAUserToAConversation
- * @apiExample Add user XXX to conversation XXX:
- * GET https://sport-2-meet.onrender.com/conversations/addUser/conversation=57895466
- * apiSuccessExample {json} Add user XXX to conversation 547896523415 :
+ * @apiExample Add user 637251e3abb31189cb4cfcc1 to conversation 63777bf8ec157793f6cb0a12
+ * Authorization Bearer iéebrgéjebruoe (admin)
+ * PATCH https://sport-2-meet.onrender.com/conversations/addUser/conversation=63777bf8ec157793f6cb0a12 
+ * @apiSuccess (conversations) {json} Conversation Content of requested conversation
+ * @apiSuccessExample {json} Success response :
+ * {
+    "_id": "63777bf8ec157793f6cb0a12",
+    "name": "Conversation de l'activité 63777bf8ec157793f6cb0a0f",
+    "users": [
+        "6377514f6c436fedc645d019",
+        "637a4683ddc8dc86fcd6b889"
+    ],
+    "activity": "63777bf8ec157793f6cb0a0f",
+    "__v": 3
+}
  * 
- * apiErrorExample {html} False id of conversation
  */
 /* ADD user to conversation */
 router.patch('/addUser/conversation=:convId', authenticate, function (req, res) {
@@ -144,11 +145,17 @@ router.patch('/addUser/conversation=:convId', authenticate, function (req, res) 
  * @api {patch} /conversations/id/:id Modify a conversation by id
  * @apiGroup conversations
  * @apiName ModifyConversationById
- * @apiExample Modify conversation XXX :
- * GET https://sport-2-meet.onrender.com/conversations/id/57895466
- * apiSuccessExample {json} Modify conversation 547896523415 :
+ * @apiParam (conversations) id Id of conversation
+ * @apiExample Modify conversation 63777bf8ec157793f6cb0a12 :
+ * Authorization Bearer iéebrgéjebruoe (admin)
+ * PATCH https://sport-2-meet.onrender.com/conversations/id/63777bf8ec157793f6cb0a12
+ * {
+ *  "name" : "modification nom"
+ * }
+ * @apiSuccess (conversations) {html} Message Success message
+ * @apiSuccessExample {html} Success response :
+ * Conversation modifiée
  * 
- * apiErrorExample {html} False id of conversation
  */
 /* PATCH conversation */
 router.patch('/id/:id', authenticate, function (req, res) {
