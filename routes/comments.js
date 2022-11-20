@@ -111,7 +111,7 @@ router.post('/conversation=:id', authenticate, function (req, res, next) {
  */
 /* DELETE comment by id */
 router.delete('/id/:id', authenticate, function (req, res) {
-  Comment.findByid(req.params.id).exec(function (err, commentById) {
+  Comment.findById(req.params.id).exec(function (err, commentById) {
     if (err) {
       return next(err);
     }
@@ -174,7 +174,7 @@ router.delete('/id/:id', authenticate, function (req, res) {
  */
 /* PATCH comment */
 router.patch('/id/:id', authenticate, function (req, res) {
-  Comment.findByid(req.params.id).exec(function (err, commentById) {
+  Comment.findById(req.params.id).exec(function (err, commentById) {
     if (err) {
       return next(err);
     }
