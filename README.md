@@ -54,6 +54,14 @@ Ce repo Github ne comprend que l’API de l’application Sport2Meet.
 ### Connection au serveur depuis Postman
 Pour se connecter au serveur depuis postman, il faut ouvrir une page "WebSocket Request".
 Ensuite, l'adresse du serveur est ws://sport-2-meet.onrender.com/ et ajouter le token dans le header :
+
 Key : Authorization
+
 Value : Bearer gbrthhbrtGEHFeruierojbgeéprg
+
 Ne pas oublier de se connecter avec un user dans une autre page afin de pouvoir mettre le token lors de la connection au serveur websocket.
+
+Vous pourrez ensuite recevoir les messages des autres utilisateurs
+### Messages possibles
+* Lorsqu'une personne rejoint ou quitte une activité auquel on est inscrit
+* Les commentaires sous une activité auquelle on est inscrit
