@@ -176,16 +176,25 @@ router.post('/activity/:id', authenticate, fileUpload({
 */
 /* GET picture by activity. */
 router.get('/activity/:id', function (req, res, next) {
-    Picture.find({
-        activity: req.params.id
-    }).populate('creator').exec(function (err, pictureByActivity) {
+    Activity.findById(req.params.id).exec(function (err, activity) {
         if (err) {
             return next(err);
         }
-        if (pictureByActivity) {
-            res.send(pictureByActivity);
+        if (activity) {
+            Picture.find({
+                activity: req.params.id
+            }).populate('creator').exec(function (err, pictureByActivity) {
+                if (err) {
+                    return next(err);
+                }
+                if (pictureByActivity) {
+                    res.send(pictureByActivity);
+                } else {
+                    res.status(404).send("Aucune photo pour cette activité");
+                }
+            });
         } else {
-            res.send("Aucune photo pour cette activité");
+            res.status(404).send("Activité non trouvée");
         }
     });
 });
@@ -267,16 +276,25 @@ router.get('/activity/:id', function (req, res, next) {
  */
 /* GET picture by user. */
 router.get('/user/:id', function (req, res, next) {
-    Picture.find({
-        creator: req.params.id
-    }).populate('activity').exec(function (err, pictureByUser) {
+    User.findById(req.params.id).exec(function (err, user) {
         if (err) {
             return next(err);
         }
-        if (pictureByUser) {
-            res.send(pictureByUser);
+        if (user) {
+            Picture.find({
+                creator: req.params.id
+            }).populate('activity').exec(function (err, pictureByUser) {
+                if (err) {
+                    return next(err);
+                }
+                if (pictureByUser) {
+                    res.send(pictureByUser);
+                } else {
+                    res.send("Aucune photo pour cet utilisateur");
+                }
+            });
         } else {
-            res.send("Aucune photo pour cet utilisateur");
+            res.status(404).send("Utilisateur non trouvé");
         }
     });
 });
@@ -307,7 +325,7 @@ router.patch('/:id', authenticate, fileUpload({
             return next(err);
         }
         // Check if the user is the creator of the picture or an admin
-        if (picture.creator == req.user._id || req.user.role == "admin") {
+        if (picture.creator.toString() == req.user._id.toString() || req.user.role == "admin") {
             // Check if the user has uploaded a file
             if (picture) {
                 if (req.files === null) {
@@ -388,7 +406,7 @@ router.delete('/:id', authenticate, function (req, res, next) {
                 res.status(403).send("Vous n'êtes pas le propriétaire de cette photo");
             }
         } else {
-            res.send("Cette photo n'existe pas");
+            res.status(404).send("Cette photo n'existe pas");
         }
     });
 });

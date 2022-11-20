@@ -59,9 +59,12 @@ router.post('/activity=:id', authenticate, function (req, res, next) {
     // Create a new document from the JSON in the request body
     const newConversation = new Conversation(req.body);
     newConversation.activity = req.params.id;
-    users = [];
+    var users = [];
     users.push(req.user._id);
+    console.log(users);
+    console.log("test");
     newConversation.users = users;
+    newConversation.name = "Conversation de l'activité " + req.params.id;
     // Save that document
     newConversation.save(function (err, savedConversation) {
         if (err) {
