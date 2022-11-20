@@ -52,7 +52,7 @@ router.get('/', authenticate, function (req, res, next) {
  * XXX
  */
 /* POST new comment */
-router.post('comments/conversation=:id', authenticate, function (req, res, next) {
+router.post('/conversation=:id', authenticate, function (req, res, next) {
   Conversation.findById(req.params.id, function (err, conversationById) {
     if (err) {
       return next(err);
