@@ -12,12 +12,15 @@ import picturesRouter from "./routes/pictures.js";
 import mongoose from 'mongoose';
 import * as config from "./config.js";
 import conversationRouter from "./routes/conversations.js";
+import cors from "cors";
 
 mongoose.Promise = Promise;
 mongoose.connect(config.databaseUrl);
 
 // create the express app
 const app = express();
+
+app.use(cors());
 
 // Log requests (except in test mode).
 if (process.env.NODE_ENV !== 'test') {
