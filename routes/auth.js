@@ -31,41 +31,47 @@ const router = express.Router();
  * Bad login
  */
 router.post('/login', async (req, res, next) => {
-    try {
-        const user = await User.findOne({
-            email: req.body.email
-        });
-        if (!user) {
-            res.status(401).send('Bad login');
-            return;
-        }
-
-        const password = req.body.password;
-        const passwordHash = user.passwordHash;
-        // Compare the password with the hash
-        const valid = await bcrypt.compare(password, passwordHash);
-        if (valid) {
-            // Create a token
-            const subject = user._id;
-            const expiresIn = '7 days';
-            jwt.sign({
-                sub: subject
-            }, config.jwtSecret, {
-                expiresIn
-            }, (err, token) => {
-                if (err) {
-                    next(err);
-                } else {
-                    res.send({
-                        token
-                    });
-                }
+    // test if password and email are present
+    if (!req.body.email || !req.body.password) {
+        res.status(401).send('Bad login');
+        return;
+    } else {
+        try {
+            const user = await User.findOne({
+                email: req.body.email
             });
-        } else {
-            res.status(401).send('Bad login');
+            if (!user) {
+                res.status(401).send('Bad login');
+                return;
+            }
+
+            const password = req.body.password;
+            const passwordHash = user.passwordHash;
+            // Compare the password with the hash
+            const valid = await bcrypt.compare(password, passwordHash);
+            if (valid) {
+                // Create a token
+                const subject = user._id;
+                const expiresIn = '7 days';
+                jwt.sign({
+                    sub: subject
+                }, config.jwtSecret, {
+                    expiresIn
+                }, (err, token) => {
+                    if (err) {
+                        next(err);
+                    } else {
+                        res.send({
+                            token
+                        });
+                    }
+                });
+            } else {
+                res.status(401).send('Bad login');
+            }
+        } catch (err) {
+            next(err);
         }
-    } catch (err) {
-        next(err);
     }
 });
 
